@@ -9,7 +9,7 @@ The list and metadata for the indicators is in *SDG children indicators MENARO.x
 -   **data**
 
     -   *MENARO_metadata.csv*: Metadata of UNICEF MENARO countries, including names, iso3 and ID codes used in SDMX
-    -   *SDG children indicators MENARO.xlsx*: Metadata of SDG children indicators. Including codes used in Global Database, Data Warehouse, indicator names.
+    -   *child_related_SDG_indicators.csv*: Metadata of child-related SDG children indicators. Including codes to download from SDG Global Database, UNICEF Data Warehouse.
 
 -   **helpers**
 
@@ -17,3 +17,7 @@ The list and metadata for the indicators is in *SDG children indicators MENARO.x
     -   *calculate_percentile.R*:
     -   *SDG_series_getp.R*:
     -   *SDGdata.R*:
+
+-   **output**
+
+    -   

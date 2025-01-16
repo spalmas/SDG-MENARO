@@ -1,24 +1,20 @@
-#' Function to call series data across all countries
+#' Function to get data from a list of series
 #'
-#' This function aggregates...
-#'
-#' @param seriescode Codes of series used in the SDG Global Database
+#' @param seriescodes Codes of series used in the SDG Global Database
 #' @return 
 #' @examples
 #' 
-#' SDGdata("SE_DEV_ONTRK")
+#' SDGdata(c("SE_DEV_ONTRK", "SE_PRE_PARTN"))
 #' 
-SDGdata<- function(seriescode){
+SDGdata<- function(seriescodes){
   ctr=0
-  onecountrysdgdata1<- data.frame()
-  z<- data.frame()
-  for (x in unique(seriescode)) {
-    ctr=ctr+1
-    SDG_series_getp(x) ->oneseriessdgdata1
-    # oneseriessdgdata1 <-api.to.json(oneseriessdgdata1)
-    # oneseriessdgdata1<- as.data.frame(oneseriessdgdata1[[7]])
-    z<- rbind.fill(z,oneseriessdgdata1)
-    print(paste(ctr,".Completed downloading series ",x))
+  onecountrysdgdata1 <- data.frame()
+  z <- data.frame()
+  for (seriescode in unique(seriescodes)) {
+    ctr <- ctr + 1
+    oneseriessdgdata1 <- SDG_series_getp(seriescode) 
+    z <- rbind.fill(z, oneseriessdgdata1)
+    print(paste0(ctr,". Completed series ",seriescode))
   }
   return(z)
 }

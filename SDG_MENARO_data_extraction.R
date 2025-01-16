@@ -42,16 +42,17 @@ source("helpers/calculate_percentile.R")
 # VARIABLES ----
 ## SDG indicator codes ----
 #metadata of SDG child indicators. Includes the code in the SDG Global Database
-child_indicators <- read.xlsx("data/SDG children indicators MENARO.xlsx", sheet = "mapping")
+CR_SDG_indicators <- read.csv("data/child_related_SDG_indicators.csv")
 
 ## MENARO countries ----
 MENARO_metadata <- read.csv(file.path(repoFolder,"data/MENARO_metadata.csv")) 
 
+# DOWNLOADING AND CLEANING THE TABLE ----
+## Download all child-related SDG for all countries ----
 
-#call all CRSDG for all countries
-worlddb_temp<- SDGdata(child_indicators$SDG_SERIES_DESCR[c(1:2)])
-worlddb<- worlddb_temp
-# worlddb<- read.csv("data/esar_sdg.csv", check.names = FALSE, comment.char = " " )
+worlddb <- SDGdata(child_indicators$SDG_SERIES_DESCR[c(2)])
+
+## Cleaning the table ----
 
 # Check for NA values in the esadb object
 if (any(is.na(worlddb))) {
