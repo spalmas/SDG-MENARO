@@ -1,7 +1,5 @@
 # Trend analysis for SDG child indicators in UNICEF MENARO
 
-The list and metadata for the indicators is in *SDG children indicators MENARO.xlsx.*
-
 ## Files in the repository
 
 -   *SDG_MENARO_data_extraction.R*: Code to extract the data from the SDG Global Database
@@ -9,7 +7,7 @@ The list and metadata for the indicators is in *SDG children indicators MENARO.x
 -   **data**
 
     -   *MENARO_metadata.csv*: Metadata of UNICEF MENARO countries, including names, iso3 and ID codes used in SDMX
-    -   *child_related_SDG_indicators.csv*: Metadata of child-related SDG children indicators. Including codes to download from SDG Global Database, UNICEF Data Warehouse.
+    -   *child_related_SDG_indicators.xlsx*: Master list of child-related SDG children indicators. Including SDG Global Database codes, UNICEF Data Warehouse codes, comments and issues. A Word .docx with a reduced version of the table can be found [HERE](https://unicef-my.sharepoint.com/:w:/g/personal/spalmas_unicef_org/ER2kJOiSRG9Hj8hcSiYwYYUBHgC4sQlZvyaFiA2eTnL4HQ?e=nL9o7y) (access with UNICEF account).
 
 -   **helpers**
 

@@ -12,19 +12,19 @@ USER        <- Sys.getenv("USER")
 
 #file paths for each user of the repository
 if (USERNAME == "palma"){
-  projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG/output")) #Output files
+  projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG")) #Output files
   repoFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO")) #repository files
-  rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG/data/"))  #raw data folder
+  #rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG/data/"))  #raw data folder
 } 
 
 # confirm that the main directory is correct
 # check if the folders exist
 stopifnot(dir.exists(projectFolder))
 stopifnot(dir.exists(repoFolder))
-stopifnot(dir.exists(rawdataFolder))
+#stopifnot(dir.exists(rawdataFolder))
 
 # PACKAGES  ----
-# library(dplyr) # mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename # |> mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename
+library(dplyr) # mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename # |> mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename
 library(httr) # GET status_code content
 library(jsonlite) # fromJSON
 library(openxlsx) # read.xlsx write.xlsx createWorkbook addWorksheet writeData saveWorkbook insertImage
@@ -40,24 +40,31 @@ source("helpers/SDGdata.R")
 source("helpers/calculate_percentile.R")
 
 # VARIABLES ----
-## SDG indicator codes ----
+## SDG indicator series codes ----
 #metadata of SDG child indicators. Includes the code in the SDG Global Database
-CR_SDG_indicators <- read.csv("data/child_related_SDG_indicators.csv")
+CR_SDG_indicators <- read.xlsx("data/child_related_SDG_indicators.xlsx", sheet = "child_related_SDG_indicators")
 
 ## MENARO countries ----
 MENARO_metadata <- read.csv(file.path(repoFolder,"data/MENARO_metadata.csv")) 
 
-# DOWNLOADING AND CLEANING THE TABLE ----
+# SDGGD DOWNLOAD ----
 ## Download all child-related SDG for all countries ----
-
-worlddb <- SDGdata(child_indicators$SDG_SERIES_DESCR[c(2)])
+CR_SDG_series <- CR_SDG_indicators$SDG_SERIES_DESCR |> unique()  #get unique values from table
+CR_SDG_series <- CR_SDG_series[!is.na(CR_SDG_series)]  #remove NA values
+sdgdb_world <- SDGdata(CR_SDG_series)  #this some 15 minutes to run
 
 ## Cleaning the table ----
+# sdgdb_world <- sdgdb_world |> select(series, geoAreaCode, geoAreaName, timePeriodStart,
+#                                      value, source, attributes.Nature, attributes.Units,
+#                                      dimensions.Age, dimensions.Sex, `dimensions.Reporting Type`,
+#                                      `dimensions.Education level`, `dimensions.Type of skill`, dimensions.Location,
+#                                      dimensions.Quantile)
+
 
 # Check for NA values in the esadb object
-if (any(is.na(worlddb))) {
+if (any(is.na(sdgdb_world))) {
   # Replace NA values with a suitable placeholder
-  worlddb[is.na(worlddb)] <- "NA"
+  sdgdb_world[is.na(sdgdb_world)] <- "NA"
 }
 
 unlist_columns <- function(df) {
@@ -69,93 +76,30 @@ unlist_columns <- function(df) {
   return(df)
 }
 
-worlddb<-unlist_columns(worlddb)
+sdgdb_world <- unlist_columns(sdgdb_world)
 
-backup_worlddb<-worlddb
-
-write.xlsx(worlddb, paste("C:\\Users\\hwannis\\OneDrive - UNICEF\\ESARO\\4. SDG\\2. SDG R API\\ESAR_progress\\data\\SDG Data all countries CRSDG - ",Sys.Date(),".xlsx", sep=""))
-write.csv(worlddb, paste("C:\\Users\\hwannis\\OneDrive - UNICEF\\ESARO\\4. SDG\\2. SDG R API\\ESAR_progress\\data\\esar_sdg",".csv", sep=""), row.names = FALSE)
+#Fixing the codes for each series 
+sdgdb_menaro$series[sdgdb_menaro$series == "SE_TOT_PRFL"]  <- "SE_TOT_PRFL_1"
 
 
 
-worlddb$numeric_value<-as.numeric(worlddb$value)
+#save table for backup and quicker analysis later
+save(sdgdb_world, file = file.path(repoFolder, "data/sdgdb_world.Rdata"))
+load(file = file.path(repoFolder, "data/sdgdb_world.Rdata"))
 
-worlddb |> mutate(esa= ifelse(geoAreaName %in% c("Angola"
-                                                  ,"Botswana"
-                                                  ,"Burundi"
-                                                  ,"Comoros"
-                                                  ,"Eritrea"
-                                                  ,"Eswatini"
-                                                  ,"Ethiopia"
-                                                  ,"Kenya"
-                                                  ,"Lesotho"
-                                                  ,"Madagascar"
-                                                  ,"Malawi"
-                                                  ,"Mozambique"
-                                                  ,"Namibia"
-                                                  ,"Rwanda"
-                                                  ,"Somalia"
-                                                  ,"South Africa"
-                                                  ,"South Sudan"
-                                                  ,"United Republic of Tanzania"
-                                                  ,"Uganda"
-                                                  ,"Zambia"
-                                                  ,"Zimbabwe"),1,0)) -> worlddb
-
-###################### calling regions
-
-# 
-# Define the API URL to fetch country information, including region and income classification
-url <- "https://api.worldbank.org/v2/country?format=json&per_page=500"
-
-# Make the GET request
-response <- GET(url)
-
-# Check if the request was successful
-if (status_code(response) == 200) {
-  # Parse the JSON content
-  json_data <- content(response, as = "text")
-  data <- fromJSON(json_data)
-  
-  # The second element of the data contains the country list
-  country_data <- data[[2]]
-  
-  # Convert the country data into a dataframe for easier viewing
-  country_df <- as.data.frame(country_data)
-  
-  world_income <-unnest(country_df, c(region, adminregion, incomeLevel, lendingType), names_sep = "_")# Display the relevant columns: id (ISO), name, region, and incomeLevel
-  
-  world_income <- world_income |> select(id,incomeLevel_value,longitude,latitude)
-  
-  # Print the resulting country information
-  print(world_income)
-} else {
-  print(paste("API request failed with status code:", status_code(response)))
-}
-
-# write.csv(world_income, "data/wi.csv")
-
-wpp<- read.csv("data/wpp.csv")
-wpp<- wpp |> select(Location, SDMX_Code,LocTypeName,ISO3_Code,SDGRegName,SubRegName,GeoRegName)
-wpp <- wpp |> mutate(SDMX_Code = as.character(SDMX_Code))
-#  merge region type
-worlddb<- worlddb |> 
-  left_join(wpp, by=c("geoAreaCode"="SDMX_Code")) |>
-  left_join(world_income, by=c("ISO3_Code"="id")) |> 
-  left_join(crsdg_sp_map, by=c("series"= "series")) |> select(-valueType, -time_detail,-geoInfoUrl,-timeCoverage,-upperBound,-lowerBound,-basePeriod, -source,-attributes.Units, -`dimensions.Reporting Type`,-`attributes.Observation Status`)
+sdgdb_menaro <- sdgdb_world |> filter(geoAreaCode %in% MENARO_metadata$LocID)
 
 
-pops<- read.csv("data/pop.csv")
-pops_merg <- pops |> select(-iso3,-location)
-pops_merg$locationId <- as.character(pops_merg$locationId)
-worlddb |> left_join(pops_merg, by=c("geoAreaCode"="locationId")) -> worlddb
+View(sdgdb_world |> filter(series == "SE_TOT_PRFL") )
 
-# m49<- read.csv("data/m49.csv")
-# # Convert 'code' in 'm49' to character
-# m49 <- m49 |> mutate(code = as.character(code))
+#GRAD23 LOWSEC PRIMAR 
+
+
+
+
 ############################
 # Filter out sex #
-worlddb |> group_by(series) |>
+sdgdb_world |> group_by(series) |>
   filter(
     (dimensions.Sex == "BOTHSEX") | (dimensions.Sex == "NA") |(is.na(dimensions.Sex)) | (dimensions.Sex == "") |
       (
@@ -207,7 +151,7 @@ worlddb5<- worlddb4 |> mutate(seriesDescription = ifelse(`dimensions.Education l
   mutate(seriesDescription = ifelse(dimensions.Location %in% c("NA", "",NA), seriesDescription, paste(seriesDescription,"-", dimensions.Location)))|>
   mutate(seriesDescription = ifelse(dimensions.Quantile %in% c("NA", "",NA), seriesDescription, paste(seriesDescription,"-", dimensions.Quantile))) |>
   select(-footnotes,- attributes.Nature,-dimensions.Age, -dimensions.Sex, -`dimensions.Education level`, -`dimensions.Type of skill`, -dimensions.Location, -dimensions.Quantile)
-# worlddb<- unlist(worlddb)
+# sdgdb_world<- unlist(sdgdb_world)
 
 
 # write.xlsx(worlddb5, paste("C:\\Users\\hwannis\\OneDrive - UNICEF\\ESARO\\4. SDG\\2. SDG R API\\ESAR_progress\\data\\all crsdg - total - ",Sys.Date(),".xlsx", sep=""))
@@ -417,7 +361,7 @@ worlddb10_glb<-worlddb10_glb |> left_join(temp_AU, by=c("geoAreaName"="geoAreaNa
 # 
 # 
 # # joing to the main db matching the indicator-country-year
-# AU_worlddb10 |> select(geoAreaCode,seriesDescription,timePeriodStart, RankPercentile_AU) |> right_join(worlddb, by = c("geoAreaCode" = "geoAreaCode", "seriesDescription"="seriesDescription", "timePeriodStart"="timePeriodStart")) -> worlddb
+# AU_worlddb10 |> select(geoAreaCode,seriesDescription,timePeriodStart, RankPercentile_AU) |> right_join(sdgdb_world, by = c("geoAreaCode" = "geoAreaCode", "seriesDescription"="seriesDescription", "timePeriodStart"="timePeriodStart")) -> sdgdb_world
 # 
 
 ####Country ranking by HIGH income
