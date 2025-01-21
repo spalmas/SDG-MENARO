@@ -29,6 +29,7 @@ library(httr) # GET status_code content
 library(jsonlite) # fromJSON
 library(openxlsx) # read.xlsx write.xlsx createWorkbook addWorksheet writeData saveWorkbook insertImage
 library(plyr) # mutate summarise rename rbind.fill
+library(stringr)
 # library(purrr) # map_dbl
 # library(tidyr) # unnest
 
@@ -149,10 +150,10 @@ sdgdb_world |> dplyr::group_by(series2,
 
 ## Exporting table ----
 save(sdgdb_world, file = file.path(rawdataFolder, "sdgdb_world.Rdata"))
-load(file = file.path(rawdataFolder, "sdgdb_world.Rdata"))
+#load(file = file.path(rawdataFolder, "sdgdb_world.Rdata"))
 
 
-# 1.1.1. DATA ----
+# WB, UNICEF 1.1.1. DATA ----
 # From Salmeron-Gomez Daylan, Solrun Engilbertsdottir, Jose Antonio Cuesta Leiva, David Newhouse, David Stewart, 
 # ‘Global Trends in Child Monetary Poverty According to International Poverty Lines’, Policy Research Working Paper, WPS10525, The World Bank, July 2023.
 # https://documents1.worldbank.org/curated/en/099835007242399476/pdf/IDU0965118d1098b8048870ac0e0cb5aeb049f98.pdf 
@@ -162,11 +163,25 @@ SI_POV_DAY1 <- SI_POV_DAY1 |> mutate(indicator = "1.1.1",
                                      series2 = "SI_POV_DAY1",
                                      timePeriodStart = 2022,
                                      value = value2.15) |> 
-  select(indicator, series2, timePeriodStart, value)
+  mutate(geoAreaCode = as.character(geoAreaCode)) |> 
+  select(indicator, geoAreaCode, series2, timePeriodStart, value)
 
+# MENARO DW ----
+PV_CHLD_DPRV_REG_MOD <- read.csv(file.path(rawdataFolder, "PV_CHLD_DPRV_REG_MOD.csv")) |>
+  filter(RESIDENCE.Residence == "_T: Total", WEALTH_QUINTILE.Wealth.Quintile == "_T: Total") |> 
+  mutate(indicator = "1.2.2",
+         series2 = "PV_CHLD_DPRV_REG_MOD",
+         timePeriodStart = TIME_PERIOD.Time.period,
+         value = OBS_VALUE.Observation.value,
+         iso3=str_sub(REF_AREA.Geographic.area, 1,3)) |>
+  left_join(MENARO_metadata, by="iso3") |> 
+  mutate(geoAreaCode = as.character(LocID)) |> 
+  select(indicator, geoAreaCode, series2, timePeriodStart, value)
 
 # MERGING ALL TABLES ----
-cri_db_world <- bind_rows(sdgdb_world, SI_POV_DAY1)
+cri_db_world <- bind_rows(sdgdb_world,
+                          SI_POV_DAY1,
+                          PV_CHLD_DPRV_REG_MOD)
 
 # EXPORT TABLE FOR ANALYSIS ----
 #save table for quicker analysis later
