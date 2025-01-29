@@ -56,7 +56,7 @@ CR_SDG_series <- CR_SDG_indicators$SDG_SERIES_DESCR |> unique()  #get unique val
 CR_SDG_series <- CR_SDG_series[!is.na(CR_SDG_series)]  #remove NA values
 CR_SDG_series <- CR_SDG_series[!(CR_SDG_series == "SI_POV_DAY1")]  #remove series that will be downloaded from other source
 
-## Download ----
+## Download (last update: 2025-01-15)----
 sdgdb_world <- SDGdata(CR_SDG_series)  #this some 15 minutes to run
 
 ## Cleaning table ----
@@ -152,13 +152,59 @@ sdgdb_world |> dplyr::group_by(series2,
 save(sdgdb_world, file = file.path(rawdataFolder, "sdgdb_world.Rdata"))
 #load(file = file.path(rawdataFolder, "sdgdb_world.Rdata"))
 
+# DW ----
+## download from DW (last update: 2025-01-26)----
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,CME,1.0/.CME_MRM0+CME_MRY0T4..?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "CME.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,ECD,1.0/.ECD_CHLD_36-59M_LMPSL..........?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "ECD.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,EDUCATION,1.0/.ED_ANAR_L02+ED_CR_L1+ED_CR_L2+ED_CR_L3+ED_MAT_G23+ED_MAT_L1+ED_MAT_L2+ED_READ_G23+ED_READ_L1+ED_READ_L2+ED_ROFST_L1+ED_ROFST_L2+ED_ROFST_L3.....?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "EDU.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,GENDER,1.0/.GN_SG_LGL_GENEQEMP....?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "GENDER.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,HIV_AIDS,1.0/.HVA_EPI_INF_RT.....?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "HIV.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,IMMUNISATION,1.0/.IM_DTP3+IM_MCV1..?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "IMMU.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,MNCH,1.0/.MNCH_ABR+MNCH_INFDEC+MNCH_MMR+MNCH_SAB+MNCH_UHC.......?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "MNCH.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,NUTRITION,1.0/.NT_ANT_HAZ_NE2_MOD+NT_ANT_WHZ_NE2+NT_ANT_WHZ_PO2......?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "NUTRITION.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,PT,1.0/.PT_CHLD_1-14_PS-PSY-V_CGVR+PT_CHLD_5-17_LBR_ECON-HC+PT_CHLD_Y0T4_REG+PT_F_18-29_SX-V_AGE-18+PT_F_GE15_PS-SX-EM_V_PTNR_12MNTH+PT_M_18-29_SX-V_AGE-18......?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "PT_CHLD.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,PT_CM,1.0/.PT_F_20-24_MRD_U18_TND..........?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "PT_CM.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,PT_FGM,1.0/.PT_F_15-49_FGM...........?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "PT_FGM.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,CHLD_PVTY,1.0/.PV_CHLD_INCM-PL..?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "CHLD_PVTY.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,SOC_PROTECTION,1.0/.SPP_CHLD_SOC_PROT....?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "SOC_PROTECTION.csv"))
+# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,WASH_HOUSEHOLDS,1.0/.WS_PPL_H-B+WS_PPL_S-ALB+WS_PPL_S-OD+WS_PPL_S-SM+WS_PPL_W-ALB+WS_PPL_W-SM...?format=sdmx-csv&labels=both")
+# write.csv(x = temp_file, file = file.path(rawdataFolder, "WASH.csv"))
+
+## Read DW files ----
+CME <- read.csv(file.path(rawdataFolder, "CME.csv"))
+ECD <- read.csv(file.path(rawdataFolder, "ECD.csv"))
+EDU <- read.csv(file.path(rawdataFolder, "EDU.csv"))
+GENDER <- read.csv(file.path(rawdataFolder, "GENDER.csv"))
+HIV <- read.csv(file.path(rawdataFolder, "HIV.csv"))
+IMMU <- read.csv(file.path(rawdataFolder, "IMMU.csv"))
+MNCH <- read.csv(file.path(rawdataFolder, "MNCH.csv"))
+NUTRITION <- read.csv(file.path(rawdataFolder, "NUTRITION.csv"))
+PT_CHLD <- read.csv(file.path(rawdataFolder, "PT_CHLD.csv"))
+PT_CM <- read.csv(file.path(rawdataFolder, "PT_CM.csv"))
+PT_FGM <- read.csv(file.path(rawdataFolder, "PT_FGM.csv"))
+CHLD_PVTY <- read.csv(file.path(rawdataFolder, "CHLD_PVTY.csv"))
+SOC_PROTECTION <- read.csv(file.path(rawdataFolder, "SOC_PROTECTION.csv"))
+WASH <- read.csv(file.path(rawdataFolder, "WASH.csv"))
 
 # WB, UNICEF 1.1.1. DATA ----
 # From Salmeron-Gomez Daylan, Solrun Engilbertsdottir, Jose Antonio Cuesta Leiva, David Newhouse, David Stewart, 
 # ‘Global Trends in Child Monetary Poverty According to International Poverty Lines’, Policy Research Working Paper, WPS10525, The World Bank, July 2023.
 # https://documents1.worldbank.org/curated/en/099835007242399476/pdf/IDU0965118d1098b8048870ac0e0cb5aeb049f98.pdf 
 # Appendix Table 36: Number of children living in monetary poor households in 2022 (thousands) 
-SI_POV_DAY1 <- read.csv(file.path(repoFolder,"source_data/SI_POV_DAY1.csv"))
+SI_POV_DAY1 <- read.csv(file.path(rawdataFolder,"SI_POV_DAY1.csv"))
 SI_POV_DAY1 <- SI_POV_DAY1 |> mutate(indicator = "1.1.1",
                                      series2 = "SI_POV_DAY1",
                                      timePeriodStart = 2022,

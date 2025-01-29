@@ -22,3 +22,5 @@
 -   **output/**
 
     -   *cri_db_world.Rdata*: final database of indicators to use for analysis
+        -   SDGDB downloads (accessed on 2025-01-20)
+        -   DW (accessed on 2025-01-26)
