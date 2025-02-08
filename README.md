@@ -2,9 +2,11 @@
 
 ## Files in the repository
 
--   *DW_data_download.R*: To download and clean data from UNICEF Data Warehouse. Produces *source_data/DW.Rdata*.
+-   *download_DW.R*: To download and clean data from UNICEF Data Warehouse. Produces *source_data/DW.Rdata*.
 
--   *SDG_MENARO_data_extraction.R*: Code to extract the data from the SDG Global Database
+-   *download_SDGGD.R*: To download and clean data from SDG Gloal Database. Produces *source_data/SDGGD.Rdata*.
+
+-   *SDG_MENARO_data_compile.R*: Code to extract the data from the SDG Global Database
 
 -   *SDG_MENARO_profile.R*: To establish working directories and packages. Should be run first before any script.
 
@@ -18,14 +20,14 @@
 
 -   **output/**
 
-    -   *cri_db_world.Rdata*: final database of indicators to use for analysis
+    -   *INDICATORS_MENARO.Rdata*: final database of indicators in MENARO to use for analysis
 
 -   **source_data/**
 
     -   *DW.Rdata*: Data from UNICEF Data Warehouse. Already filtered cleaned. Created in *DW_data_download.R*.
     -   *MENARO_metadata.csv*: Metadata of UNICEF MENARO countries, including names, iso3 and ID codes used in SDMX
     -   *PV_CHLD_DPRV_REG_MOD.csv*: Multidimensional poverty data from MENARO DW. The original source was the MDP report.
-    -   *sdgdb_world.Rdata*: Clean data form SDG Database
+    -   *SDGGD.Rdata*: Clean data form SDG Database
     -   *SI_POV_DAY1.csv*: Data from Salmeron-Gomez, et al., 2023 on % of children living in extreme poverty.
 
 ## Files not in the repository

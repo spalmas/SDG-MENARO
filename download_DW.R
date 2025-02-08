@@ -211,27 +211,27 @@ DW <- bind_rows(CME,
                 SOC_PROTECTION, 
                 WASH) |> 
   select(MENARO.indicator.code,  #Reducing number of columns for easier exploration
-         INDICATOR.Indicator, 
+         indicator = INDICATOR.Indicator, 
          DW.indicator.code,
          iso3,
-         SEX.Sex,
-         AGE.Current.age,
-         TIME_PERIOD.Time.period,
-         AGE.Current.age,
-         OBS_VALUE.Observation.Value,
-         DATA_SOURCE.Data.Source,
-         UNIT_MEASURE.Unit.of.measure,
-         REF_PERIOD.Reference.Period,
-         UNIT_MULTIPLIER.Unit.multiplier,
-         SOURCE_LINK.Citation.of.or.link.to.the.data.source,
-         SERIES_FOOTNOTE.Series.footnote,
-         COVERAGE_TIME.The.period.of.time.for.which.data.are.provided,
-         FREQ_COLL.Time.interval.at.which.the.source.data.are.collected,
-         OBS_FOOTNOTE.Observation.footnote)
+         sex = SEX.Sex,
+         age = AGE.Current.age,
+         time.period = TIME_PERIOD.Time.period,
+         obs.value = OBS_VALUE.Observation.Value,
+         data.source = DATA_SOURCE.Data.Source,
+         unit.measure = UNIT_MEASURE.Unit.of.measure,
+         ref.period = REF_PERIOD.Reference.Period,
+         unit.multiplier = UNIT_MULTIPLIER.Unit.multiplier,
+         source.link = SOURCE_LINK.Citation.of.or.link.to.the.data.source,
+         series.footnote = SERIES_FOOTNOTE.Series.footnote,
+         coverage.time = COVERAGE_TIME.The.period.of.time.for.which.data.are.provided,
+         freq.coll = FREQ_COLL.Time.interval.at.which.the.source.data.are.collected,
+         obs.footnote = OBS_FOOTNOTE.Observation.footnote) |> 
+  mutate(database.source="DW")
 
 # CHECK DUPLICATED VALUES ----
 #There should be one value per each of the columns below
-DW |> dplyr::group_by(iso3, INDICATOR.Indicator, SEX.Sex, TIME_PERIOD.Time.period, AGE.Current.age) |> 
+DW |> dplyr::group_by(iso3, indicator, sex, time.period, age) |> 
   dplyr::tally() |>
   dplyr::filter(n>1)
 
