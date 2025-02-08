@@ -2,14 +2,11 @@
 
 ## Files in the repository
 
+-   *DW_data_download.R*: To download and clean data from UNICEF Data Warehouse. Produces *source_data/DW.Rdata*.
+
 -   *SDG_MENARO_data_extraction.R*: Code to extract the data from the SDG Global Database
 
--   **source_data/**
-
-    -   *MENARO_metadata.csv*: Metadata of UNICEF MENARO countries, including names, iso3 and ID codes used in SDMX
-    -   *child_related_SDG_indicators.xlsx*: Master list of child-related SDG children indicators. Including SDG Global Database codes, UNICEF Data Warehouse codes, comments and issues. A document with a reduced version of the table can be found [HERE](https://unicef-my.sharepoint.com/:w:/g/personal/spalmas_unicef_org/ER2kJOiSRG9Hj8hcSiYwYYUBHgC4sQlZvyaFiA2eTnL4HQ?e=nL9o7y) (access with UNICEF account).
-    -   *PV_CHLD_DPRV_REG_MOD.csv*: Multidimensional poverty data from MENARO DW. The original source was the MDP report.
-    -   *SI_POV_DAY1.csv*: Data from Salmeron-Gomez, et al., 2023 on % of children living in extreme poverty.
+-   *SDG_MENARO_profile.R*: To establish working directories and packages. Should be run first before any script.
 
 -   **helpers/**
 
@@ -22,5 +19,17 @@
 -   **output/**
 
     -   *cri_db_world.Rdata*: final database of indicators to use for analysis
-        -   SDGDB downloads (accessed on 2025-01-20)
-        -   DW (accessed on 2025-01-26)
+
+-   **source_data/**
+
+    -   *DW.Rdata*: Data from UNICEF Data Warehouse. Already filtered cleaned. Created in *DW_data_download.R*.
+    -   *MENARO_metadata.csv*: Metadata of UNICEF MENARO countries, including names, iso3 and ID codes used in SDMX
+    -   *PV_CHLD_DPRV_REG_MOD.csv*: Multidimensional poverty data from MENARO DW. The original source was the MDP report.
+    -   *sdgdb_world.Rdata*: Clean data form SDG Database
+    -   *SI_POV_DAY1.csv*: Data from Salmeron-Gomez, et al., 2023 on % of children living in extreme poverty.
+
+## Files not in the repository
+
+-   [child_related_SDG_indicators.xlsx](https://unicef-my.sharepoint.com/:x:/r/personal/spalmas_unicef_org/Documents/MENARO%20SDG/child_related_SDG_indicators.xlsx?d=wa4abddb44036478db00fa74ee2a9ab25&csf=1&web=1&e=K1uSLa): Master table of child-related SDG children indicators. Including SDG Global Database codes, UNICEF Data Warehouse codes, comments and issues. (Only people with existing access)
+
+-   [child_related_SDG_indicators.docx](https://unicef-my.sharepoint.com/:w:/r/personal/spalmas_unicef_org/Documents/MENARO%20SDG/child_related_SDG_indicators.docx?d=we824a41d4492476f8fc85c4a26306185&csf=1&web=1&e=giRpjV): Reduced version of the master table of indicators. Useful for written documents (Only people with existing access)

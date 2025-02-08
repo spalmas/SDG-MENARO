@@ -1,0 +1,36 @@
+# Project: Trend analysis for SDG children indicators for UNICEF MENARO
+# Script description: Profile, folders to use and packages
+# Author: Sebastian Palmas
+
+rm(list=ls())
+
+# PROFILE ----
+
+USERNAME    <- Sys.getenv("USERNAME")
+USERPROFILE <- Sys.getenv("USERPROFILE")
+USER        <- Sys.getenv("USER")
+
+#file paths for each user of the repository
+if (USERNAME == "palma"){
+  projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG")) #Output files
+  repoFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO")) #repository files
+  rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO/source_data/"))  #raw data folder
+} else if (USERNAME == "YOUR_USERNAME"){
+  projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH")) #Output files
+  repoFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH")) #repository files
+  rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH"))  #raw data folder
+} 
+
+# confirm that the main directory is correct
+# check if the folders exist
+stopifnot(dir.exists(projectFolder))
+stopifnot(dir.exists(repoFolder))
+stopifnot(dir.exists(rawdataFolder))
+
+# PACKAGES  ----
+library(dplyr) # mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename # |> mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename
+library(httr) # GET status_code content
+library(jsonlite) # fromJSON
+library(openxlsx) # read.xlsx write.xlsx createWorkbook addWorksheet writeData saveWorkbook insertImage
+library(plyr) # mutate summarise rename rbind.fill
+library(stringr)

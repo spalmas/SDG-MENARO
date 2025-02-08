@@ -2,36 +2,8 @@
 # Script description: SDG data extraction from the SDG Global Database for MENARO countries
 # Author: Sebastian Palmas
 
-rm(list=ls())
-
 # PROFILE ----
-
-USERNAME    <- Sys.getenv("USERNAME")
-USERPROFILE <- Sys.getenv("USERPROFILE")
-USER        <- Sys.getenv("USER")
-
-#file paths for each user of the repository
-if (USERNAME == "palma"){
-  projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG")) #Output files
-  repoFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO")) #repository files
-  rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO/source_data/"))  #raw data folder
-} 
-
-# confirm that the main directory is correct
-# check if the folders exist
-stopifnot(dir.exists(projectFolder))
-stopifnot(dir.exists(repoFolder))
-stopifnot(dir.exists(rawdataFolder))
-
-# PACKAGES  ----
-library(dplyr) # mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename # |> mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename
-library(httr) # GET status_code content
-library(jsonlite) # fromJSON
-library(openxlsx) # read.xlsx write.xlsx createWorkbook addWorksheet writeData saveWorkbook insertImage
-library(plyr) # mutate summarise rename rbind.fill
-library(stringr)
-# library(purrr) # map_dbl
-# library(tidyr) # unnest
+source("SDG-MENARO_profile.R")
 
 
 # SOURCE FILES ----
@@ -47,7 +19,8 @@ MENARO_metadata <- read.csv(file.path(rawdataFolder,"MENARO_metadata.csv"))
 
 ## SDG indicator series codes ----
 #metadata of SDG child indicators. Includes the code in the SDG Global Database
-CR_SDG_indicators <- read.xlsx(file.path(rawdataFolder, "child_related_SDG_indicators.xlsx"), sheet = "child_related_SDG_indicators")
+CR_SDG_indicators <- read.xlsx(file.path("C:/Users/palma/OneDrive - UNICEF/MENARO SDG/child_related_SDG_indicators.xlsx"),
+                               sheet = "child_related_SDG_indicators")
 
 
 # SDGGD DOWNLOAD ----
@@ -101,46 +74,46 @@ sdgdb_world <- sdgdb_world |> filter(!(series == "SE_TOT_CPLR" & dimensions.Loca
 sdgdb_world <- sdgdb_world |> filter(!(series == "SE_TOT_CPLR" & dimensions.Quantile %in% c("Q1", "Q2", "Q3", "Q4", "Q5")))
 
 #Changing the codes for indicators that come from the same series
-sdgdb_world$series2 <- sdgdb_world$series
+sdgdb_world$MENARO_indicator_code <- sdgdb_world$series
 
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_PRFL" &
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_PRFL" &
                       sdgdb_world$`dimensions.Education level` == "GRAD23" &
                       sdgdb_world$`dimensions.Type of skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_1"
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_PRFL" &
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_PRFL" &
                       sdgdb_world$`dimensions.Education level` == "PRIMAR" &
                       sdgdb_world$`dimensions.Type of skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_2"
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_PRFL" &
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_PRFL" &
                       sdgdb_world$`dimensions.Education level` == "LOWSEC" &
                       sdgdb_world$`dimensions.Type of skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_3"
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_PRFL" &
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_PRFL" &
                       sdgdb_world$`dimensions.Education level` == "GRAD23" &
                       sdgdb_world$`dimensions.Type of skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_4"
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_PRFL" &
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_PRFL" &
                       sdgdb_world$`dimensions.Education level` == "PRIMAR" &
                       sdgdb_world$`dimensions.Type of skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_5"
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_PRFL" &
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_PRFL" &
                       sdgdb_world$`dimensions.Education level` == "LOWSEC" &
                       sdgdb_world$`dimensions.Type of skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_6"
 
-sdgdb_world$series2[sdgdb_world$series2 == "SH_HIV_INCD"]  <- "SH_HIV_INCD_U15"
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SH_HIV_INCD"]  <- "SH_HIV_INCD_U15"
 
-sdgdb_world$series2[sdgdb_world$series2 == "VC_VAW_SXVLN" & 
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "VC_VAW_SXVLN" & 
                     sdgdb_world$dimensions.Sex == "FEMALE"]  <- "VC_VAW_SXVLN_F"
-sdgdb_world$series2[sdgdb_world$series2 == "VC_VAW_SXVLN" &
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "VC_VAW_SXVLN" &
                     sdgdb_world$dimensions.Sex == "MALE"]  <- "VC_VAW_SXVLN_M"
 
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_CPLR" & 
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_CPLR" & 
                       sdgdb_world$`dimensions.Education level` == "PRIMAR"]  <- "SE_TOT_CPLR_PR"
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_CPLR" & 
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_CPLR" & 
                       sdgdb_world$`dimensions.Education level` == "LOWSEC"]  <- "SE_TOT_CPLR_LS"
-sdgdb_world$series2[sdgdb_world$series2 == "SE_TOT_CPLR" & 
+sdgdb_world$MENARO_indicator_code[sdgdb_world$MENARO_indicator_code == "SE_TOT_CPLR" & 
                       sdgdb_world$`dimensions.Education level` == "UPPSEC"]  <- "SE_TOT_CPLR_US"
 
 #Value from character to numeric
 sdgdb_world$value <- as.numeric(sdgdb_world$value)
 
-#check if indicators only have one row per disaggregation (i.e. that we deleted all unused rows and correctly assigned series2)
-sdgdb_world |> dplyr::group_by(series2, 
+#check if indicators only have one row per disaggregation (i.e. that we deleted all unused rows and correctly assigned MENARO_indicator_code)
+sdgdb_world |> dplyr::group_by(MENARO_indicator_code, 
                                timePeriodStart, 
                                geoAreaName,
                                dimensions.Age,
@@ -153,51 +126,10 @@ save(sdgdb_world, file = file.path(rawdataFolder, "sdgdb_world.Rdata"))
 #load(file = file.path(rawdataFolder, "sdgdb_world.Rdata"))
 
 # DW ----
-## download from DW (last update: 2025-01-26)----
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,CME,1.0/.CME_MRM0+CME_MRY0T4..?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "CME.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,ECD,1.0/.ECD_CHLD_36-59M_LMPSL..........?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "ECD.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,EDUCATION,1.0/.ED_ANAR_L02+ED_CR_L1+ED_CR_L2+ED_CR_L3+ED_MAT_G23+ED_MAT_L1+ED_MAT_L2+ED_READ_G23+ED_READ_L1+ED_READ_L2+ED_ROFST_L1+ED_ROFST_L2+ED_ROFST_L3.....?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "EDU.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,GENDER,1.0/.GN_SG_LGL_GENEQEMP....?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "GENDER.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,HIV_AIDS,1.0/.HVA_EPI_INF_RT.....?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "HIV.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,IMMUNISATION,1.0/.IM_DTP3+IM_MCV1..?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "IMMU.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,MNCH,1.0/.MNCH_ABR+MNCH_INFDEC+MNCH_MMR+MNCH_SAB+MNCH_UHC.......?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "MNCH.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,NUTRITION,1.0/.NT_ANT_HAZ_NE2_MOD+NT_ANT_WHZ_NE2+NT_ANT_WHZ_PO2......?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "NUTRITION.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,PT,1.0/.PT_CHLD_1-14_PS-PSY-V_CGVR+PT_CHLD_5-17_LBR_ECON-HC+PT_CHLD_Y0T4_REG+PT_F_18-29_SX-V_AGE-18+PT_F_GE15_PS-SX-EM_V_PTNR_12MNTH+PT_M_18-29_SX-V_AGE-18......?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "PT_CHLD.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,PT_CM,1.0/.PT_F_20-24_MRD_U18_TND..........?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "PT_CM.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,PT_FGM,1.0/.PT_F_15-49_FGM...........?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "PT_FGM.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,CHLD_PVTY,1.0/.PV_CHLD_INCM-PL..?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "CHLD_PVTY.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,SOC_PROTECTION,1.0/.SPP_CHLD_SOC_PROT....?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "SOC_PROTECTION.csv"))
-# temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,WASH_HOUSEHOLDS,1.0/.WS_PPL_H-B+WS_PPL_S-ALB+WS_PPL_S-OD+WS_PPL_S-SM+WS_PPL_W-ALB+WS_PPL_W-SM...?format=sdmx-csv&labels=both")
-# write.csv(x = temp_file, file = file.path(rawdataFolder, "WASH.csv"))
+# UNICEF DW data is downloaded in DW_data_download.R
 
-## Read DW files ----
-CME <- read.csv(file.path(rawdataFolder, "CME.csv"))
-ECD <- read.csv(file.path(rawdataFolder, "ECD.csv"))
-EDU <- read.csv(file.path(rawdataFolder, "EDU.csv"))
-GENDER <- read.csv(file.path(rawdataFolder, "GENDER.csv"))
-HIV <- read.csv(file.path(rawdataFolder, "HIV.csv"))
-IMMU <- read.csv(file.path(rawdataFolder, "IMMU.csv"))
-MNCH <- read.csv(file.path(rawdataFolder, "MNCH.csv"))
-NUTRITION <- read.csv(file.path(rawdataFolder, "NUTRITION.csv"))
-PT_CHLD <- read.csv(file.path(rawdataFolder, "PT_CHLD.csv"))
-PT_CM <- read.csv(file.path(rawdataFolder, "PT_CM.csv"))
-PT_FGM <- read.csv(file.path(rawdataFolder, "PT_FGM.csv"))
-CHLD_PVTY <- read.csv(file.path(rawdataFolder, "CHLD_PVTY.csv"))
-SOC_PROTECTION <- read.csv(file.path(rawdataFolder, "SOC_PROTECTION.csv"))
-WASH <- read.csv(file.path(rawdataFolder, "WASH.csv"))
+## Read compiled DW file ----
+
 
 # WB, UNICEF 1.1.1. DATA ----
 # From Salmeron-Gomez Daylan, Solrun Engilbertsdottir, Jose Antonio Cuesta Leiva, David Newhouse, David Stewart, 
@@ -206,23 +138,26 @@ WASH <- read.csv(file.path(rawdataFolder, "WASH.csv"))
 # Appendix Table 36: Number of children living in monetary poor households in 2022 (thousands) 
 SI_POV_DAY1 <- read.csv(file.path(rawdataFolder,"SI_POV_DAY1.csv"))
 SI_POV_DAY1 <- SI_POV_DAY1 |> mutate(indicator = "1.1.1",
-                                     series2 = "SI_POV_DAY1",
+                                     MENARO_indicator_code = "SI_POV_DAY1",
                                      timePeriodStart = 2022,
                                      value = value2.15) |> 
   mutate(geoAreaCode = as.character(geoAreaCode)) |> 
-  select(indicator, geoAreaCode, series2, timePeriodStart, value)
+  select(indicator, geoAreaCode, MENARO_indicator_code, timePeriodStart, value)
 
 # MENARO DW ----
 PV_CHLD_DPRV_REG_MOD <- read.csv(file.path(rawdataFolder, "PV_CHLD_DPRV_REG_MOD.csv")) |>
   filter(RESIDENCE.Residence == "_T: Total", WEALTH_QUINTILE.Wealth.Quintile == "_T: Total") |> 
   mutate(indicator = "1.2.2",
-         series2 = "PV_CHLD_DPRV_REG_MOD",
+         MENARO_indicator_code = "PV_CHLD_DPRV_REG_MOD",
          timePeriodStart = TIME_PERIOD.Time.period,
          value = OBS_VALUE.Observation.value,
          iso3=str_sub(REF_AREA.Geographic.area, 1,3)) |>
   left_join(MENARO_metadata, by="iso3") |> 
   mutate(geoAreaCode = as.character(LocID)) |> 
-  select(indicator, geoAreaCode, series2, timePeriodStart, value)
+  select(indicator, geoAreaCode, MENARO_indicator_code, timePeriodStart, value)
+
+# COMPARE SDGGB and DW ----
+
 
 # MERGING ALL TABLES ----
 cri_db_world <- bind_rows(sdgdb_world,
