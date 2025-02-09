@@ -14,6 +14,7 @@
 
     -   *api_to_json.R*:
     -   *calculate_percentile.R*:
+    -   *descriptive_df.R*: function to get descriptive statistics of the information for each indicator.
     -   *SDG_series_getp.R*:
     -   *SDGdata.R*:
     -   *unlist_columns.R*: data from SDGDB comes with nested lists. This function unlists the columns.

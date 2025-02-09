@@ -15,14 +15,6 @@ source("helpers/SDG_series_getp.R")
 source("helpers/SDGdata.R")
 source("helpers/unlist_columns.R")
 
-# SOURCE FILES ----
-## MENARO countries ----
-MENARO_metadata <- read.csv(file.path(rawdataFolder,"MENARO_metadata.csv")) 
-
-## SDG indicator series codes ----
-#metadata of SDG child indicators. Includes the code in the SDG Global Database
-CR_SDG_indicators <- read.xlsx(file.path("C:/Users/palma/OneDrive - UNICEF/MENARO SDG/child_related_SDG_indicators.xlsx"),
-                               sheet = "child_related_SDG_indicators")
 
 #DOWNLOAD AND FILTER ----
 ## Creating list of series to download ----
