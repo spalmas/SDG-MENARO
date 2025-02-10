@@ -6,7 +6,7 @@
 
 
 # PROFILE ----
-source("SDG-MENARO_profile.R")
+source("SDG_MENARO_profile.R")
 
 ## Functions  ----
 source("helpers/api_to_json.R")

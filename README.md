@@ -21,7 +21,7 @@
 
 -   **output/**
 
-    -   *INDICATORS_MENARO.Rdata*: final database of indicators in MENARO to use for analysis
+    -   *indicator_data_MENARO.Rdata*: final database of indicators in MENARO used in analysis
 
 -   **source_data/**
 

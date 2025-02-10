@@ -6,7 +6,7 @@
 
 
 # PROFILE ----
-source("SDG-MENARO_profile.R")
+source("SDG_MENARO_profile.R")
 
 #DOWNLOAD AND FILTER ----
 ## Neonatal and U5 mortality rate ----
