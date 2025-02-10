@@ -28,11 +28,12 @@ stopifnot(dir.exists(repoFolder))
 stopifnot(dir.exists(rawdataFolder))
 
 # PACKAGES  ----
-library(dplyr) # mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename # |> mutate select left_join group_by filter ungroup if_else lag case_when n summarise first sym rename
-library(httr) # GET status_code content
-library(jsonlite) # fromJSON
-library(openxlsx) # read.xlsx write.xlsx createWorkbook addWorksheet writeData saveWorkbook insertImage
-library(plyr) # mutate summarise rename rbind.fill
+library(countrycode) 
+library(dplyr) 
+library(httr) 
+library(jsonlite) 
+library(openxlsx) 
+library(plyr) 
 library(stringr)
 
 # SOURCE FILES ----

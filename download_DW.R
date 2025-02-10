@@ -2,7 +2,7 @@
 # Script description: Download UNICEF DW data for selected indicators and producing one DW file to use in data_extraction script
 # Author: Sebastian Palmas
 
-# Last run: 2025-02-09
+# Last run: 2025-02-10
 
 
 # PROFILE ----
@@ -15,8 +15,7 @@ CME <- temp_file |>
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+")) |> 
   filter(SEX.Sex == "_T: Total",
-         WEALTH_QUINTILE.Wealth.Quintile == "_T: Total",
-         iso3 %in% MENARO_metadata$iso3) |> 
+         WEALTH_QUINTILE.Wealth.Quintile == "_T: Total") |> 
   left_join(CR_SDG_indicators |> select(DW.indicator.code, MENARO.indicator.code), by="DW.indicator.code")
 write.csv(x = CME, file = file.path(rawdataFolder, "CME.csv"))
 
@@ -27,8 +26,7 @@ ECD <- temp_file |>
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
                        DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+"),
          MENARO.indicator.code = "SE_DEV_ONTRK") |> 
-  filter(iso3 %in% MENARO_metadata$iso3,
-         SEX.Sex == "_T: Total",
+  filter(SEX.Sex == "_T: Total",
          AGE.Current.age == "M36T59: 36 to 59 months old",
          WEALTH_QUINTILE.Wealth.Quintile == "_T: Total",
          MOTHER_EDUCATION.Mother.s.Education.Level == "_T: Total",
@@ -45,8 +43,7 @@ EDU <- temp_file |>
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+")) |> 
   filter(SEX.Sex == "_T: Total",
          WEALTH_QUINTILE.Wealth.Quintile == "_T: Total",
-         RESIDENCE.Residence == "_T: Total",
-         iso3 %in% MENARO_metadata$iso3) |> 
+         RESIDENCE.Residence == "_T: Total") |> 
   left_join(CR_SDG_indicators |> select(DW.indicator.code, MENARO.indicator.code), by="DW.indicator.code")
 write.csv(x = EDU, file = file.path(rawdataFolder, "EDU.csv"))
 
@@ -57,7 +54,6 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 GENDER <- temp_file |> 
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+")) |> 
-  filter(iso3 %in% MENARO_metadata$iso3) |> 
   left_join(CR_SDG_indicators |> select(DW.indicator.code, MENARO.indicator.code), by="DW.indicator.code")
 write.csv(x = GENDER, file = file.path(rawdataFolder, "GENDER.csv"))
 
@@ -67,8 +63,7 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 HIV <- temp_file |>
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          MENARO.indicator.code = ifelse(`AGE.Current.age` == "Y0T14: Under 15 years old", "SH_HIV_INCD_U15", "SH_HIV_INCD_15_19")) |> 
-  filter(iso3 %in% MENARO_metadata$iso3,
-         SEX.Sex == "_T: Total")
+  filter(SEX.Sex == "_T: Total")
 HIV$OBS_VALUE.Observation.Value[HIV$OBS_VALUE.Observation.Value == "<0.01"] <- 0 #CONFIRM WHAT TO DO WITH THESE VALUES
 HIV$OBS_VALUE.Observation.Value <- as.numeric(HIV$OBS_VALUE.Observation.Value)
 HIV$LOWER_BOUND.Lower.Bound[HIV$LOWER_BOUND.Lower.Bound == "<0.01"] <- 0 #CONFIRM WHAT TO DO WITH THESE VALUES
@@ -82,8 +77,7 @@ write.csv(x = HIV, file = file.path(rawdataFolder, "HIV.csv"))
 temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,IMMUNISATION,1.0/.IM_DTP3+IM_MCV2..?format=sdmx-csv&labels=both")
 IMMU <- temp_file |> 
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
-         MENARO.indicator.code = ifelse(str_detect(INDICATOR.Indicator, "DTP"), "SH_ACS_DTP3", "SH_ACS_MCV2")) |> 
-  filter(iso3 %in% MENARO_metadata$iso3)
+         MENARO.indicator.code = ifelse(str_detect(INDICATOR.Indicator, "DTP"), "SH_ACS_DTP3", "SH_ACS_MCV2"))
 write.csv(x = IMMU, file = file.path(rawdataFolder, "IMMU.csv"))
 
 ## Maternal, newborn and child survival  ----
@@ -92,8 +86,7 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 MNCH <- temp_file |> 
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
        DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+")) |>
-  filter(iso3 %in% MENARO_metadata$iso3,
-         WEALTH_QUINTILE.Wealth.Quintile ==  "_T: Total",
+  filter(WEALTH_QUINTILE.Wealth.Quintile ==  "_T: Total",
          RESIDENCE.Residence == "_T: Total") |> 
   filter(!(DW.indicator.code == "MNCH_ABR" & AGE.Current.age == "Y10T14: 10 to 14 years old")) |> #ABR also includes 10-14
   left_join(CR_SDG_indicators |> select(DW.indicator.code, MENARO.indicator.code), by="DW.indicator.code") 
@@ -105,8 +98,7 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 NUTRITION <- temp_file |>
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+")) |>
-  filter(iso3 %in% MENARO_metadata$iso3,
-         SEX.Sex == "_T: Total",
+  filter(SEX.Sex == "_T: Total",
          AGE.Current.age == "Y0T4: Under 5 years old",
          WEALTH_QUINTILE.Wealth.Quintile ==  "_T: Total",
          RESIDENCE.Residence == "_T: Total",
@@ -120,8 +112,7 @@ write.csv(x = NUTRITION, file = file.path(rawdataFolder, "NUTRITION.csv"))
 temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNICEF,PT,1.0/.PT_CHLD_1-14_PS-PSY-V_CGVR+PT_CHLD_5-17_LBR_ECON-HC+PT_CHLD_Y0T4_REG+PT_F_18-29_SX-V_AGE-18+PT_F_GE15_PS-SX-EM_V_PTNR_12MNTH+PT_M_18-29_SX-V_AGE-18......?format=sdmx-csv&labels=both")
 PT_CHLD <- temp_file |> mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
                            DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+")) |>
-  filter(iso3 %in% MENARO_metadata$iso3,
-         WEALTH_QUINTILE.Wealth.Quintile ==  "_T: Total",
+  filter(WEALTH_QUINTILE.Wealth.Quintile ==  "_T: Total",
          RESIDENCE.Residence == "_T: Total",
          EDUCATION_LEVEL.Education.Level == "_T: Total") |> 
   filter(!(DW.indicator.code == "PT_CHLD_1-14_PS-PSY-V_CGVR" & SEX.Sex %in% c("F: Female", "M: Male"))) |> # PPmay include M and F, we don't need those
@@ -148,8 +139,7 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 PT_CM <- temp_file |>
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+"),
-         MENARO.indicator.code = "SP_DYN_MRBF18") |>
-  filter(iso3 %in% MENARO_metadata$iso3)
+         MENARO.indicator.code = "SP_DYN_MRBF18") 
 write.csv(x = PT_CM, file = file.path(rawdataFolder, "PT_CM.csv"))
 
 ## Female genital mutilation ----
@@ -159,8 +149,7 @@ PT_FGM <- temp_file |>
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+"),
          MENARO.indicator.code = "SH_STA_FGMS") |>
-  filter(iso3 %in% MENARO_metadata$iso3,
-         WEALTH_QUINTILE.Wealth.Quintile ==  "_T: Total",
+  filter(WEALTH_QUINTILE.Wealth.Quintile ==  "_T: Total",
          RESIDENCE.Residence == "_T: Total",
          EDUCATION_LEVEL.Education.Level == "_T: Total",
          AGE.Current.age == "Y15T49: 15 to 49 years old") #for some countries there are other age groups reported
@@ -172,8 +161,7 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 CHLD_PVTY <- temp_file |> 
   mutate(iso3 = str_extract(REF_AREA.Country, "[^:]+"),
                              DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+"),
-         MENARO.indicator.code = "SI_POV_NAHC") |>
-  filter(iso3 %in% MENARO_metadata$iso3)
+         MENARO.indicator.code = "SI_POV_NAHC") 
 write.csv(x = CHLD_PVTY, file = file.path(rawdataFolder, "CHLD_PVTY.csv"))
 
 
@@ -183,8 +171,7 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 SOC_PROTECTION <- temp_file |> 
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+"),
-         MENARO.indicator.code = "SI_COV_CHLD") |>
-  filter(iso3 %in% MENARO_metadata$iso3)
+         MENARO.indicator.code = "SI_COV_CHLD")
 write.csv(x = SOC_PROTECTION, file = file.path(rawdataFolder, "SOC_PROTECTION.csv"))
 
 ## WASH ----
@@ -194,8 +181,7 @@ temp_file <- read.csv("https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/
 WASH <- temp_file |> 
   mutate(iso3 = str_extract(REF_AREA.Geographic.area, "[^:]+"),
          DW.indicator.code = str_extract(INDICATOR.Indicator, "[^:]+")) |>
-  filter(iso3 %in% MENARO_metadata$iso3,
-         RESIDENCE.Residence == "_T: Total") |> 
+  filter(RESIDENCE.Residence == "_T: Total") |> 
   left_join(CR_SDG_indicators |> select(DW.indicator.code, MENARO.indicator.code), by="DW.indicator.code")
 write.csv(x = WASH, file = file.path(rawdataFolder, "WASH.csv"))
 

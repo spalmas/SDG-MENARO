@@ -21,7 +21,7 @@
 
 -   **output/**
 
-    -   *indicator_data_MENARO.Rdata*: final database of indicators in MENARO used in analysis
+    -   *indicator_data_WORLD.Rdata*: final database of indicators used in analysis. All countries included.
 
 -   **source_data/**
 

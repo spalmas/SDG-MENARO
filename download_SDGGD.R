@@ -2,7 +2,7 @@
 # Script description: Download SDG Global database data for selected indicators and producing one SDGGD DW file to use in data analysis script
 # Author: Sebastian Palmas
 
-# Last run: 2025-02-08
+# Last run: 2025-02-10
 
 
 # PROFILE ----
@@ -23,7 +23,7 @@ CR_SDG_series <- CR_SDG_series[!is.na(CR_SDG_series)]  #remove NA values
 CR_SDG_series <- CR_SDG_series[!(CR_SDG_series == "SI_POV_DAY1")]  #remove series that will be downloaded from other source
 
 ## Download ----
-SDGGD <- SDGdata(CR_SDG_series)  #this some 15 minutes to run
+SDGGD <- SDGdata(CR_SDG_series)  #this takes aprox. 15 minutes to run
 
 ## Cleaning table ----
 # Check for NA values in the esadb object
@@ -105,8 +105,8 @@ SDGGD$geoAreaCode <- as.numeric(SDGGD$geoAreaCode)
 
 # FILTER AND ADD COLUMNS ----
 SDGGD <- SDGGD |> 
-  filter(geoAreaCode %in% MENARO_metadata$LocID) |> 
-  left_join(MENARO_metadata |> select(LocID, iso3), by=c('geoAreaCode'="LocID")) |> 
+  mutate(iso3=countrycode(geoAreaCode, origin = "un", destination = "iso3c")) |> 
+  filter(!is.na(iso3)) |> 
   select(MENARO.indicator.code,
          iso3,
          SDGGD.indicator.code = series,

@@ -22,7 +22,6 @@ SI_POV_DAY1 <- read.csv(file.path(rawdataFolder,"SI_POV_DAY1.csv")) |>
          MENARO.indicator.code = "SI_POV_DAY1",
          time.period = 2022,
          obs.value = value2.15) |> 
-  filter(iso3 %in% MENARO_metadata$iso3) |> 
   mutate(geoAreaCode = as.character(geoAreaCode)) |> 
   select(MENARO.indicator.code, iso3, time.period, obs.value)
 
@@ -34,7 +33,6 @@ PV_CHLD_DPRV_REG_MOD <- read.csv(file.path(rawdataFolder, "PV_CHLD_DPRV_REG_MOD.
          obs.value = OBS_VALUE.Observation.value,
          iso3=str_sub(REF_AREA.Geographic.area, 1,3)) |>
   left_join(MENARO_metadata, by="iso3") |> 
-  filter(iso3 %in% MENARO_metadata$iso3) |> 
   select(MENARO.indicator.code, iso3 , time.period, obs.value)
 
 # DESCRIPTIVE STATISTICS ----
@@ -46,7 +44,7 @@ DW_descriptive <- describe_indicator(DW)
 
 # MERGING ALL TABLES ----
 #Combining the selected dataset for each indicator into one table ready for analysis
-indicator_data_MENARO <- bind_rows(SDGGD |> filter(MENARO.indicator.code %in% c("SE_DEV_ONTRK", "SE_PRE_PARTN", "SE_TOT_CPLR_LS",
+indicator_data_WORLD <- bind_rows(SDGGD |> filter(MENARO.indicator.code %in% c("SE_DEV_ONTRK", "SE_PRE_PARTN", "SE_TOT_CPLR_LS",
                                                                             "SE_TOT_CPLR_PR", "SE_TOT_CPLR_US", 
                                                                             "SE_TOT_PRFL_2", "SE_TOT_PRFL_3", "SE_TOT_PRFL_4",
                                                                             "SE_TOT_PRFL_5", "SE_TOT_PRFL_6", "SG_LGL_GENEQEMP",
@@ -72,4 +70,4 @@ indicator_data_MENARO <- bind_rows(SDGGD |> filter(MENARO.indicator.code %in% c(
          source.link, series.footnote, database.source)
 
 # EXPORT TABLE FOR ANALYSIS ----
-save(indicator_data_MENARO, file = 'output/indicator_data_MENARO.Rdata')
+save(indicator_data_WORLD, file = 'output/indicator_data_WORLD.Rdata')
