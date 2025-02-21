@@ -1,0 +1,870 @@
+---
+title: "SDG_MENARO_data_description"
+format: docx
+editor: visual
+---
+
+This code describes the compiled data for the MENARO SDG benchmarking project in UNICEF.
+
+Unless noted, the data refers only to data from the 20 MENARO countries.
+
+```{r}
+#| echo: false
+#| message: false
+
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(openxlsx)
+library(tidyr)
+
+load("output/indicator_data_WORLD.Rdata")
+
+## MENARO countries ----
+MENARO_metadata <- read.csv("source_data/MENARO_metadata.csv")
+
+## SDG indicator series codes ----
+#metadata of SDG child indicators. Includes the code in the SDG Global Database
+CR_SDG_indicators <- read.xlsx("C:/Users/palma/OneDrive - UNICEF/MENARO SDG/child_related_SDG_indicators.xlsx",
+                                sheet = "child_related_SDG_indicators")
+
+indicator_data_MENARO <- indicator_data_WORLD |> filter(iso3 %in% MENARO_metadata$iso3)
+
+indicator_metadata <- read.xlsx("C:/Users/palma/OneDrive - UNICEF/MENARO SDG/child_related_SDG_indicators.xlsx")
+```
+
+## Number of countries and points per indicator
+
+```{r}
+#| echo: false
+
+points.per.indicator <- indicator_data_MENARO |> 
+  group_by(MENARO.indicator.code) |> 
+  reframe(Countries = length(unique(iso3)),
+          First.Year = min(time.period),
+          Last.Year = max(time.period),
+          n.points = length(obs.value),
+          n.points.2015 = length(obs.value[time.period>=2015])) |> 
+  left_join(indicator_metadata |> select(MENARO.indicator.code, Benchmarking.indicators, SDG_INDICATOR), by = "MENARO.indicator.code") |> 
+  select(SDG_INDICATOR, Benchmarking.indicators, Countries, First.Year, Last.Year, n.points, n.points.2015) 
+
+points.per.indicator <- indicator_metadata |> select(SDG_INDICATOR, Benchmarking.indicators) |> left_join(points.per.indicator, by=c("SDG_INDICATOR", "Benchmarking.indicators"))|> 
+  arrange(SDG_INDICATOR)
+
+kable(points.per.indicator)
+```
+
+{{< pagebreak >}}
+
+## Number of indicators per country
+
+```{r}
+#| echo: false
+
+points.per.indicator.per.country <- indicator_data_MENARO |> 
+  group_by(iso3, MENARO.indicator.code) |> 
+  reframe(n.points = length(obs.value)) 
+
+count.zeros <- as.data.frame(table(points.per.indicator.per.country$iso3, points.per.indicator.per.country$MENARO.indicator.code))
+
+zeros.per.country <- count.zeros |> 
+  group_by(Var1) |> 
+  reframe(`Ind. w/o point` = sum(Freq==0)) |> 
+  rename(iso3=Var1)
+
+indicators.per.country <- points.per.indicator.per.country |> 
+  group_by(iso3) |> 
+  reframe(`Ind. w/1 point` = sum(n.points == 1),
+          `Ind. w/2 point` = sum(n.points == 2),
+          `Ind. w/3 point` = sum(n.points == 3),
+          `Ind. w/4 point` = sum(n.points == 4),
+          `Ind. w/5+ point` = sum(n.points > 4)) |> 
+  left_join(zeros.per.country, by="iso3") |> 
+  select(iso3, `Ind. w/o point`, `Ind. w/1 point`,
+         `Ind. w/2 point`,`Ind. w/3 point`,`Ind. w/4 point`,
+         `Ind. w/5+ point`)
+  
+kable(indicators.per.country)
+```
+
+## 1.1.1 Children living in households in extreme poverty
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SI_POV_DAY1")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 1.2.1 Children living below the national poverty line
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SI_POV_NAHC")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 1.2.2 Multidimensional poverty
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="PV_CHLD_DPRV_REG_MOD")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 1.3.1. Children covered by social protection
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SI_COV_CHLD")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 1.4.1 (1/2) At least basic drinking water
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SP_ACS_BSRVH2O")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 1.4.1 (2/2) At least basic sanitation
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SP_ACS_BSRVSAN")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 2.2.1 Stunting
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_STA_STNT")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 2.2.2 Wasting
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_STA_WAST")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 2.2.2 Overweight
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SN_STA_OVWGT")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.1.1 Maternal mortality ratio
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_STA_MORT")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.1.2 Skilled Birth attendant
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_STA_BRTC")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.2.1 Under-5 mortality rate
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_DYN_MORT")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.2.2 Neonatal mortality rate
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_DYN_NMRT")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.3.1 HIV incidence, 15-19 years
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_HIV_INCD_15_19")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.3.1 HIV incidence, 0-14 years
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_HIV_INCD_U15")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.7.2 Adolescent birth rate
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SP_DYN_ADKL")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.8.1 Universal health coverage index
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_ACS_UNHC")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.b.1 (1/2) DTP3
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_ACS_DTP3")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 3.b.1 (2/2) MCV2
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_ACS_MCV2")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.1 (1/6) Math, grade 2 or 3
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_PRFL_1")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.1 (2/6) Math, primary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_PRFL_2")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.1 (3/6) Math, lower secondary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_PRFL_3")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.1 (4/6) Reading, grade 2 or 3
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_PRFL_4")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.1 (5/6) Reading, primary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_PRFL_5")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.1 (6/6) Reading, lower secondary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_PRFL_6")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.2 (1/3) Completion rate, primary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_CPLR_PR")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.2 (2/3) Completion rate, lower secondary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_CPLR_LS")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.2 (3/3) Completion rate, upper secondary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_TOT_CPLR_US")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.4 (1/3) Out-of-school rate, primary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="ED_ROFST_L1")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.4 (2/3) Out-of-school rate, lower secondary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="ED_ROFST_L2")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.1.4 (3/3) Out-of-school rate, upper secondary
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="ED_ROFST_L3")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.2.1 Developmentally on track
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_DEV_ONTRK")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 4.2.2 Net attendance rate
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SE_PRE_PARTN")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 5.1.1 Legal frameworks for gender equality
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SG_LGL_GENEQEMP")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 5.2.1 Sexual violence
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="VC_VAW_MARR")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 5.3.1 Child marriage
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SP_DYN_MRBF18")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 5.3.2 FGM
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_STA_FGMS")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 5.6.1 Informed decisions on reproductive health
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_FPL_INFMRH")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 6.1.1 Safely managed drinking water
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_H2O_SAFE")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 6.2.1 (1/3) Open defecation
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_SAN_DEFECT")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 6.2.1 (2/3) Basic hygiene
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_SAN_HNDWSH")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 6.2.1 (3/3) Safely managed sanitation
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SH_SAN_SAFE")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 8.7.1 Child labour
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="SL_TLF_CHLDEC")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 16.2.1 Violent discipline
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="VC_VAW_PHYPYV")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 16.2.3 (1/2) Sexual violence in childhood (female)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="VC_VAW_SXVLN_F")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+{{< pagebreak >}}
+
+## 16.2.3 (2/2) Sexual violence in childhood (male)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+indicator.data <- indicator_data_MENARO |> 
+  filter(MENARO.indicator.code=="VC_VAW_SXVLN_M")
+  
+g <- ggplot(indicator.data, aes(x=time.period, y=obs.value, color=iso3))+
+  geom_point()+
+  geom_line()
+print(g)
+```
+
+## 

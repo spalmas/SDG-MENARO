@@ -2,11 +2,11 @@
 # Script description: Download SDG Global database data for selected indicators and producing one SDGGD DW file to use in data analysis script
 # Author: Sebastian Palmas
 
-# Last run: 2025-02-10
+# Last data download: 2025-02-12
 
 
 # PROFILE ----
-source("SDG_MENARO_profile.R")
+source("profile.R")
 
 ## Functions  ----
 source("helpers/api_to_json.R")
@@ -16,25 +16,33 @@ source("helpers/SDGdata.R")
 source("helpers/unlist_columns.R")
 
 
-#DOWNLOAD AND FILTER ----
+## DOWNLOAD IF NOT READING ----
 ## Creating list of series to download ----
-CR_SDG_series <- CR_SDG_indicators$SDG_SERIES_DESCR |> unique()  #get unique values from table
-CR_SDG_series <- CR_SDG_series[!is.na(CR_SDG_series)]  #remove NA values
-CR_SDG_series <- CR_SDG_series[!(CR_SDG_series == "SI_POV_DAY1")]  #remove series that will be downloaded from other source
+# CR_SDG_series <- CR_SDG_indicators$SDG_SERIES_DESCR |> unique()  #get unique values from table
+# CR_SDG_series <- CR_SDG_series[!is.na(CR_SDG_series)]  #remove NA values
+# CR_SDG_series <- CR_SDG_series[!(CR_SDG_series %in% c("SI_POV_DAY1","SD_MDP_CSMP"))]  #remove series that will be downloaded from other source
+# 
+# ## Download ----
+# SDGGD <- SDGdata(CR_SDG_series)  #this takes aprox. 15 minutes to run
+# SDGGD <- SDGdata("")  #this takes aprox. 15 minutes to run
+# 
+# ## Cleaning table ----
+# # Check for NA values in the esadb object
+# if (any(is.na(SDGGD))) {
+#   # Replace NA values with a suitable placeholder
+#   SDGGD[is.na(SDGGD)] <- "NA"
+# }
+# 
+# #unlisting columns
+# SDGGD$footnotes <- NULL #This list is weird and has less values than rows
+# SDGGD <- unlist_columns(SDGGD)
+# 
+# # Saving complete file
+# write.csv(SDGGD, file = "source_data/SGDGD_unfiltered.csv",row.names = FALSE)
 
-## Download ----
-SDGGD <- SDGdata(CR_SDG_series)  #this takes aprox. 15 minutes to run
+# READING IF NOT DOWNLOAD ----
+SDGGD <- read.csv(file = "source_data/SGDGD_unfiltered.csv")
 
-## Cleaning table ----
-# Check for NA values in the esadb object
-if (any(is.na(SDGGD))) {
-  # Replace NA values with a suitable placeholder
-  SDGGD[is.na(SDGGD)] <- "NA"
-}
-
-#unlisting columns
-SDGGD$footnotes <- NULL #This list is weird and has less values than rows
-SDGGD <- unlist_columns(SDGGD)
 
 #deleting rows that are not of use (disaggregations not included in our indicators)
 SDGGD <- SDGGD |> filter(!(series == "SE_DEV_ONTRK" & dimensions.Sex %in% c("FEMALE", "MALE")))
@@ -66,38 +74,38 @@ SDGGD <- SDGGD |> filter(!(series == "SE_TOT_CPLR" & dimensions.Quantile %in% c(
 #Changing the codes for indicators that come from the same series
 SDGGD$MENARO.indicator.code <- SDGGD$series
 
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_PRFL" &
-                                    SDGGD$`dimensions.Education level` == "GRAD23" &
-                                    SDGGD$`dimensions.Type of skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_1"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_PRFL" &
-                                    SDGGD$`dimensions.Education level` == "PRIMAR" &
-                                    SDGGD$`dimensions.Type of skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_2"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_PRFL" &
-                                    SDGGD$`dimensions.Education level` == "LOWSEC" &
-                                    SDGGD$`dimensions.Type of skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_3"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_PRFL" &
-                                    SDGGD$`dimensions.Education level` == "GRAD23" &
-                                    SDGGD$`dimensions.Type of skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_4"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_PRFL" &
-                                    SDGGD$`dimensions.Education level` == "PRIMAR" &
-                                    SDGGD$`dimensions.Type of skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_5"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_PRFL" &
-                                    SDGGD$`dimensions.Education level` == "LOWSEC" &
-                                    SDGGD$`dimensions.Type of skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_6"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_PRFL" &
+                              SDGGD$`dimensions.Education.level` == "GRAD23" &
+                              SDGGD$`dimensions.Type.of.skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_1"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_PRFL" &
+                              SDGGD$`dimensions.Education.level` == "PRIMAR" &
+                              SDGGD$`dimensions.Type.of.skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_2"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_PRFL" &
+                              SDGGD$`dimensions.Education.level` == "LOWSEC" &
+                              SDGGD$`dimensions.Type.of.skill` == "SKILL_MATH"]  <- "SE_TOT_PRFL_3"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_PRFL" &
+                              SDGGD$`dimensions.Education.level` == "GRAD23" &
+                              SDGGD$`dimensions.Type.of.skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_4"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_PRFL" &
+                              SDGGD$`dimensions.Education.level` == "PRIMAR" &
+                              SDGGD$`dimensions.Type.of.skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_5"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_PRFL" &
+                              SDGGD$`dimensions.Education.level` == "LOWSEC" &
+                              SDGGD$`dimensions.Type.of.skill` == "SKILL_READ"]  <- "SE_TOT_PRFL_6"
 
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SH_HIV_INCD"]  <- "SH_HIV_INCD_U15"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SH_HIV_INCD"]  <- "SH_HIV_INCD_U15"
 
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "VC_VAW_SXVLN" & 
+SDGGD$MENARO.indicator.code[SDGGD$series == "VC_VAW_SXVLN" & 
                                     SDGGD$dimensions.Sex == "FEMALE"]  <- "VC_VAW_SXVLN_F"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "VC_VAW_SXVLN" &
+SDGGD$MENARO.indicator.code[SDGGD$series == "VC_VAW_SXVLN" &
                                     SDGGD$dimensions.Sex == "MALE"]  <- "VC_VAW_SXVLN_M"
 
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_CPLR" & 
-                                    SDGGD$`dimensions.Education level` == "PRIMAR"]  <- "SE_TOT_CPLR_PR"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_CPLR" & 
-                                    SDGGD$`dimensions.Education level` == "LOWSEC"]  <- "SE_TOT_CPLR_LS"
-SDGGD$MENARO.indicator.code[SDGGD$MENARO.indicator.code == "SE_TOT_CPLR" & 
-                                    SDGGD$`dimensions.Education level` == "UPPSEC"]  <- "SE_TOT_CPLR_US"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_CPLR" & 
+                                    SDGGD$`dimensions.Education.level` == "PRIMAR"]  <- "SE_TOT_CPLR_PR"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_CPLR" & 
+                                    SDGGD$`dimensions.Education.level` == "LOWSEC"]  <- "SE_TOT_CPLR_LS"
+SDGGD$MENARO.indicator.code[SDGGD$series == "SE_TOT_CPLR" & 
+                                    SDGGD$`dimensions.Education.level` == "UPPSEC"]  <- "SE_TOT_CPLR_US"
 
 #Value from character to numeric
 SDGGD$value <- as.numeric(SDGGD$value)
@@ -115,9 +123,7 @@ SDGGD <- SDGGD |>
          time.period = timePeriodStart,
          obs.value = value,
          data.source = source,
-         unit.measure = attributes.Units,
-         education.level = `dimensions.Education level`,
-         type.of.skill = `dimensions.Type of skill`) |> 
+         unit.measure = attributes.Units) |> 
   mutate(database.source="SDGGD")
   
   
@@ -127,9 +133,9 @@ SDGGD |> dplyr::group_by(MENARO.indicator.code,
                                time.period, 
                                iso3,
                                age,
-                               sex, 
-                               education.level,
-                               type.of.skill) |> dplyr::tally() |> dplyr::filter(n>1)
+                               sex) |>
+  dplyr::tally() |> 
+  dplyr::filter(n>1)
 
 # SAVE FILE ----
 save(SDGGD, file = "source_data/SDGGD.Rdata")

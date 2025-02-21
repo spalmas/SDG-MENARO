@@ -29,11 +29,12 @@ stopifnot(dir.exists(rawdataFolder))
 
 # PACKAGES  ----
 library(countrycode) 
-library(dplyr) 
+library(plyr) 
+library(dplyr)
+library(ggplot2)
 library(httr) 
 library(jsonlite) 
 library(openxlsx) 
-library(plyr) 
 library(stringr)
 
 # SOURCE FILES ----

@@ -3,7 +3,7 @@
 # Author: Sebastian Palmas
 
 # PROFILE ----
-source("SDG_MENARO_profile.R")
+source("profile.R")
 
 # FUNCTIONS  ----
 source("helpers/descriptive_df.R")
@@ -11,6 +11,9 @@ source("helpers/descriptive_df.R")
 # SOURCE FILES ----
 load("source_data/SDGGD.Rdata")
 load("source_data/DW.Rdata")
+load("source_data/SE_TOT_PRFL_2.Rdata")
+load("source_data/SH_HIV_INCD_U15.Rdata")
+load("source_data/SI_POV_NAHC.Rdata")
 
 ## WB, UNICEF 1.1.1. data ----
 # From Salmeron-Gomez Daylan, Solrun Engilbertsdottir, Jose Antonio Cuesta Leiva, David Newhouse, David Stewart, 
@@ -36,38 +39,51 @@ PV_CHLD_DPRV_REG_MOD <- read.csv(file.path(rawdataFolder, "PV_CHLD_DPRV_REG_MOD.
   select(MENARO.indicator.code, iso3 , time.period, obs.value)
 
 # DESCRIPTIVE STATISTICS ----
-describe_indicator(SI_POV_DAY1)
-describe_indicator(PV_CHLD_DPRV_REG_MOD)
-SDGGD_descriptive <- describe_indicator(SDGGD)
-DW_descriptive <- describe_indicator(DW)
-
+# describe_indicator(SI_POV_DAY1)
+# describe_indicator(PV_CHLD_DPRV_REG_MOD)
+# SDGGD_descriptive <- describe_indicator(SDGGD |> filter(iso3 %in% MENARO_metadata$iso3))
+# DW_descriptive <- describe_indicator(DW |> filter(iso3 %in% MENARO_metadata$iso3))
 
 # MERGING ALL TABLES ----
 #Combining the selected dataset for each indicator into one table ready for analysis
-indicator_data_WORLD <- bind_rows(SDGGD |> filter(MENARO.indicator.code %in% c("SE_DEV_ONTRK", "SE_PRE_PARTN", "SE_TOT_CPLR_LS",
-                                                                            "SE_TOT_CPLR_PR", "SE_TOT_CPLR_US", 
-                                                                            "SE_TOT_PRFL_2", "SE_TOT_PRFL_3", "SE_TOT_PRFL_4",
-                                                                            "SE_TOT_PRFL_5", "SE_TOT_PRFL_6", "SG_LGL_GENEQEMP",
-                                                                            "SH_ACS_DTP3", "SH_ACS_MCV2", "SH_ACS_UNHC",
-                                                                            "SH_DYN_MORT", "SH_DYN_NMRT", "SH_FPL_INFMRH",
-                                                                            "SH_H2O_SAFE", "SH_SAN_DEFECT", "SH_SAN_HNDWSH",
-                                                                            "SH_SAN_SAFE", "SH_STA_FGMS", "SH_STA_MORT",
-                                                                            "SH_STA_STNT", "SH_STA_WAST", "SI_COV_CHLD",
-                                                                            "SI_POV_NAHC", "SL_TLF_CHLDEC", "SN_STA_OVWGT", 
-                                                                            "SP_ACS_BSRVH2O", "SP_ACS_BSRVSAN", "SP_DYN_ADKL",
-                                                                            "SP_DYN_MRBF18", "VC_VAW_MARR", "VC_VAW_PHYPYV",
-                                                                            "VC_VAW_SXVLN_F", "VC_VAW_SXVLN_M")),
-                               DW |> filter(MENARO.indicator.code %in% c("ED_ROFST_L1",
-                                                                         "ED_ROFST_L2", 
-                                                                         "ED_ROFST_L3", 
-                                                                         "SG_REG_BRTH", 
-                                                                         "SH_HIV_INCD_15_19", 
-                                                                         "SH_HIV_INCD_U15", 
-                                                                         "SH_STA_BRTC")),
-                               SI_POV_DAY1,
-                               PV_CHLD_DPRV_REG_MOD) |> 
+indicator_data_WORLD <- bind_rows(SDGGD |> filter(MENARO.indicator.code %in% c("SE_DEV_ONTRK", "SE_PRE_PARTN",
+                                                                               "SE_TOT_CPLR_LS","SE_TOT_CPLR_PR", "SE_TOT_CPLR_US", 
+                                                                               "SE_TOT_PRFL_3", "SE_TOT_PRFL_5", "SE_TOT_PRFL_6",
+                                                                               "SG_LGL_GENEQEMP",
+                                                                               "SH_ACS_UNHC",
+                                                                               "SH_DYN_MORT", "SH_DYN_NMRT",
+                                                                               "SH_FPL_INFMRH",
+                                                                               "SH_H2O_SAFE", 
+                                                                               "SH_SAN_DEFECT", "SH_SAN_HNDWSH", "SH_SAN_SAFE",
+                                                                               "SH_STA_FGMS", "SH_STA_BRTC", "SH_STA_MORT",
+                                                                               "SH_STA_STNT", "SH_STA_WAST", "SN_STA_OVWGT", 
+                                                                               "SI_COV_CHLD",
+                                                                               "SP_ACS_BSRVH2O", "SP_ACS_BSRVSAN", "SP_DYN_ADKL",
+                                                                               "VC_VAW_MARR", "VC_VAW_PHYPYV",
+                                                                               "VC_VAW_SXVLN_F", "VC_VAW_SXVLN_M")),
+                                  DW |> filter(MENARO.indicator.code %in% c("ED_ROFST_L1",
+                                                                            "ED_ROFST_L2", 
+                                                                            "ED_ROFST_L3", 
+                                                                            "SE_TOT_PRFL_4",
+                                                                            "SG_REG_BRTH", 
+                                                                            "SH_ACS_DTP3",
+                                                                            "SH_ACS_MCV2",
+                                                                            "SH_HIV_INCD_15_19",
+                                                                            "SL_TLF_CHLDEC",
+                                                                            "SP_DYN_MRBF18")),
+                                  PV_CHLD_DPRV_REG_MOD,
+                                  SE_TOT_PRFL_2,
+                                  SH_HIV_INCD_U15,
+                                  SI_POV_DAY1,
+                                  SI_POV_NAHC) |> 
   select(MENARO.indicator.code, iso3, time.period, obs.value, unit.measure, data.source, obs.footnote,
          source.link, series.footnote, database.source)
+
+# CHECK DUPLICATED VALUES ----
+#There should be one value per each of the columns below
+indicator_data_WORLD |> dplyr::group_by(iso3, MENARO.indicator.code, time.period) |> 
+  dplyr::tally() |>
+  dplyr::filter(n>1)
 
 # EXPORT TABLE FOR ANALYSIS ----
 save(indicator_data_WORLD, file = 'output/indicator_data_WORLD.Rdata')
