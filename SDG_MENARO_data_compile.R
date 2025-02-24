@@ -1,5 +1,5 @@
 # Project: Trend analysis for SDG children indicators for UNICEF MENARO
-# Script description: SDG data compile from the different data sources
+# Script description: Compiles the final table of indicator values used for analysis: output/indicator_data_WORLD.Rdata
 # Author: Sebastian Palmas
 
 # PROFILE ----

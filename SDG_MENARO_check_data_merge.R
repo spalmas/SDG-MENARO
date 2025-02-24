@@ -1,5 +1,5 @@
 # Project: Trend analysis for SDG children indicators for UNICEF MENARO
-# Script description: Script to check if datasets (SDGDB and DW) can be merged
+# Script description: To check if SDGGD and DW data can be merged and produce merged datasets for selected indicators. Produces SE_TOT_PRFL_2.Rdata, SH_HIV_INCD_U15.Rdata and SI_POV_NAHC.Rdata found in source_data/
 # Author: Sebastian Palmas
 
 # PROFILE ----
