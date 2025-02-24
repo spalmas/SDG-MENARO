@@ -60,6 +60,16 @@
 
     -   Target values used in previous analyses
 
--   [MENARO SDG indicator analysis.docx](https://unicef-my.sharepoint.com/:w:/r/personal/spalmas_unicef_org/Documents/MENARO%20SDG/MENARO%20SDG%20indicator%20analysis.docx?d=we824a41d4492476f8fc85c4a26306185&csf=1&web=1&e=vYMwGe): Document with details of the analysis to use in the final report. Includes reduced tables of indicators, which ones are modeled, if we merged any data, and general description of the analysis so far.
+-   [Data processing MENA SDG report.docx](https://unicef-my.sharepoint.com/:w:/r/personal/spalmas_unicef_org/Documents/MENARO%20SDG/Data%20Processing%20MENA%20SDG%20report.docx?d=we824a41d4492476f8fc85c4a26306185&csf=1&web=1&e=HNpkXa): Document with details of the data processing for the MENA SDG report. It also serves as the consultancy report for Sebastian Palmas. Includes
+
+    -   Key files in the analysis
+
+    -   Methodology for selection of data source for each indicator
+
+    -   Summary tables of indicators: number of SDG indicators and series included in the analysis, series final data source
+
+    -   Review of existing global and regional methodologies for SDG indicator progress assessments.
+
+    -   Exploration of alternative statistical methodologies for trend analysis towards reaching SDG targets in 2030
 
 -   [SDG_MENARO_data_description.docx](https://unicef-my.sharepoint.com/:w:/r/personal/spalmas_unicef_org/Documents/MENARO%20SDG/SDG_MENARO_data_description.docx?d=wd8b2268c027d4b54a8a4277e9f7da304&csf=1&web=1&e=tYm9xz): descriptive analysis to check number of points, number of indicators by country, number of countries by indicator. (Only people with existing access)
