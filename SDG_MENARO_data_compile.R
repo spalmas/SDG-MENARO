@@ -11,9 +11,9 @@ source("helpers/descriptive_df.R")
 # SOURCE FILES ----
 load("source_data/SDGGD.Rdata")
 load("source_data/DW.Rdata")
-load("source_data/SE_TOT_PRFL_2.Rdata")
-load("source_data/SH_HIV_INCD_U15.Rdata")
-load("source_data/SI_POV_NAHC.Rdata")
+load("source_data/SE_TOT_PRFL_2.Rdata")  #data for indicator created with merged data from SDGGD and DW. Created in SDG_MENARO_check_data_merge.R
+load("source_data/SH_HIV_INCD_U15.Rdata")  #data for indicator created with merged data from SDGGD and DW. Created in SDG_MENARO_check_data_merge.R
+load("source_data/SI_POV_NAHC.Rdata")  #data for indicator created with merged data from SDGGD and DW. Created in SDG_MENARO_check_data_merge.R
 
 ## WB, UNICEF 1.1.1. data ----
 # From Salmeron-Gomez Daylan, Solrun Engilbertsdottir, Jose Antonio Cuesta Leiva, David Newhouse, David Stewart, 
@@ -45,7 +45,8 @@ PV_CHLD_DPRV_REG_MOD <- read.csv(file.path(rawdataFolder, "PV_CHLD_DPRV_REG_MOD.
 # DW_descriptive <- describe_indicator(DW |> filter(iso3 %in% MENARO_metadata$iso3))
 
 # MERGING ALL TABLES ----
-#Combining the selected dataset for each indicator into one table ready for analysis
+#Combining data for each indicator into one table ready for analysis
+# This is where a source is chosen for each indicator
 indicator_data_WORLD <- bind_rows(SDGGD |> filter(MENARO.indicator.code %in% c("SE_DEV_ONTRK", "SE_PRE_PARTN",
                                                                                "SE_TOT_CPLR_LS","SE_TOT_CPLR_PR", "SE_TOT_CPLR_US", 
                                                                                "SE_TOT_PRFL_3", "SE_TOT_PRFL_5", "SE_TOT_PRFL_6",

@@ -15,10 +15,13 @@ if (USERNAME == "palma"){
   projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG")) #Output files
   repoFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO")) #repository files
   rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO/source_data/"))  #raw data folder
+  CR_SDG_indicators_path <- file.path("C:/Users/palma/OneDrive - UNICEF/MENARO SDG/child_related_SDG_indicators.xlsx") #master table with indicator codes. Local folder
 } else if (USERNAME == "YOUR_USERNAME"){
   projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH")) #Output files
   repoFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH")) #repository files
   rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH"))  #raw data folder
+  CR_SDG_indicators_path <- file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH") #master table with indicator codes. Local folder
+  
 } 
 
 # confirm that the main directory is correct
@@ -43,5 +46,5 @@ MENARO_metadata <- read.csv(file.path(rawdataFolder,"MENARO_metadata.csv"))
 
 ## SDG indicator series codes ----
 #metadata of SDG child indicators. Includes the code in the SDG Global Database
-CR_SDG_indicators <- read.xlsx(file.path("C:/Users/palma/OneDrive - UNICEF/MENARO SDG/child_related_SDG_indicators.xlsx"),
+CR_SDG_indicators <- read.xlsx(CR_SDG_indicators_path,
                                sheet = "child_related_SDG_indicators")
