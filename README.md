@@ -20,7 +20,8 @@ SDG-MENARO/
 │   ├── unlist_columns.R: data from SDGDB comes with nested lists. This function unlists the columns. Used in download_SDGGD.R
 │   
 ├── benchmarking/
-│   ├── benckmarking.R: 
+│   ├── benckmarking.R: main benchmarking script
+│   ├── benckmarking_functions.R: different functions used in the main benchmarking script
 │   
 ├── output/
 │   ├── indicator_data_WORLD.Rdata: final database of indicators used in analysis. All countries included.
@@ -38,7 +39,7 @@ SDG-MENARO/
 
 ## How to update the source data files
 
-To update the source data files, *profile.R* needs to have the information for the user. After checking that *profile.R* is OK, three scripts need to run:
+To update the source data files, *profile.R* needs to have the information for the user. After that, three scripts need to run:
 
 -   *download_DW.R*: lines to download the data need to be uncommented. This script also creates .csv files with unfiltered data for each dataflow. These csv files can be used to skip downloading the data every time to produce *DW.Rdata*.
 
