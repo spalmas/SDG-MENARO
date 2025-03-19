@@ -19,9 +19,9 @@ SDG-MENARO/
 │   ├── SDGdata.R: it downloads data from the SDGDG from a list of series codes. Used in download_SDGGD.R.
 │   ├── unlist_columns.R: data from SDGDB comes with nested lists. This function unlists the columns. Used in download_SDGGD.R
 │   
-├── benchmarking/
-│   ├── benckmarking.R: main benchmarking script
-│   ├── benckmarking_functions.R: different functions used in the main benchmarking script
+├── progress_assessment/
+│   ├── progress_assessment.R: main script to estimate the SDG progress
+│   ├── progress_assessment_functions.R: different functions used in the main progress assessment script
 │   
 ├── output/
 │   ├── indicator_data_WORLD.Rdata: final database of indicators used in analysis. All countries included.
