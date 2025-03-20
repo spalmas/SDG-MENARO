@@ -2,8 +2,6 @@
 # Script description: functions used for the progress assessment
 # Author: Sebastian Palmas
 
-
-
 # Current status index ----
 # I_cv: current year's value
 # I_0: base year's value

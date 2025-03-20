@@ -9,12 +9,7 @@
 source("profile.R")
 
 ## Functions  ----
-source("helpers/api_to_json.R")
-source("helpers/calculate_percentile.R")
-source("helpers/SDG_series_getp.R")
-source("helpers/SDGdata.R")
-source("helpers/unlist_columns.R")
-
+source("01_database_download/download_helpers.R")
 
 ## DOWNLOAD IF NOT READING ----
 ## Creating list of series to download ----
@@ -138,4 +133,4 @@ SDGGD |> dplyr::group_by(MENARO.indicator.code,
   dplyr::filter(n>1)
 
 # SAVE FILE ----
-save(SDGGD, file = "source_data/SDGGD.Rdata")
+save(SDGGD, file = "00_source_data/SDGGD.Rdata")

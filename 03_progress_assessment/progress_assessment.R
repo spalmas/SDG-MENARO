@@ -6,8 +6,8 @@
 source("profile.R")
 
 # FILES ----
-load("output/indicator_data_WORLD.Rdata")
-source("progress_assessment/progress_assessment_functions.R")
+load("04_output/indicator_data_WORLD.Rdata")
+source("03_progress_assessment/progress_assessment_functions.R")
 
 # PREPARE TABLE WITH MENARO AND LOG VALUES ----
 indicator_data_MENARO <- indicator_data_WORLD |> filter(iso3 %in% MENARO_metadata$iso3)
@@ -21,7 +21,7 @@ target.year <- 2030
 # The calculations are done with a loop for each indicator and each country
 
 ## Empty table to store results ----
-progress_results <- tibble(iso3 = character(0),
+progress.results <- tibble(iso3 = character(0),
                           MENARO.indicator.code = character(0),
                           points = integer(0),
                           CS = numeric(0),
@@ -115,7 +115,7 @@ for (i in 1:nrow(CR_SDG_indicators)){
     }
   
     #storing indicator|country results in final table
-    progress_results <- bind_rows(progress_results,
+    progress.results <- bind_rows(progress.results,
                                  tibble(iso3 = c,
                                         MENARO.indicator.code = CR_SDG_indicators$MENARO.indicator.code[i],
                                         points = points.i.c,
@@ -129,4 +129,4 @@ for (i in 1:nrow(CR_SDG_indicators)){
 }
 
 # EXPORTING RESULTS ----
-save(progress_results, file = "output/progress.results.Rdata")
+save(progress.results, file = "04_output/progress_results.Rdata")

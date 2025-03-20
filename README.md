@@ -4,29 +4,10 @@
 
 ```         
 SDG-MENARO/
-├── download_DW.R: to download and clean data from UNICEF Data Warehouse. Produces source_data/DW.Rdata
-├── download_SDGGD.R: to download and clean data from SDG Global Database. Produces source_data/SDGGD.Rdata
-├── profile.R: to establish working directories and packages. Should be run first before any script
-├── SDG_MENARO_check_data_merge.R: to check if SDGGD and DW data can be merged and produce merged datasets for selected indicators. Produces SE_TOT_PRFL_2.Rdata, SH_HIV_INCD_U15.Rdata and SI_POV_NAHC.Rdata found in source_data/.
-├── SDG_MENARO_data_compile.R: compiles the final table of indicator values used for analysis: output/indicator_data_WORLD.Rdata.
 │
-├── helpers/
-│   ├── api_to_json.R: converts API call to structured json. Used in SDG_series_getp.R.
-│   ├── calculate_percentile.R:
-│   ├── descriptive_df.R: function to get descriptive statistics of the information for each indicator. Not used, originally used in SDG_MENARO_data_compile.R.
-│   ├── SDG_series_getp.R: creates a URL from a series code and merges the data found through all the pages of data available from that indicator. Used in SDGdata.R.
-│   ├── SDG_MENARO_data_description.qmd: to produce .doc with descriptive analysis by indicator and by country
-│   ├── SDGdata.R: it downloads data from the SDGDG from a list of series codes. Used in download_SDGGD.R.
-│   ├── unlist_columns.R: data from SDGDB comes with nested lists. This function unlists the columns. Used in download_SDGGD.R
+├── profile.R: to establish working directories and packages. Should be run first before any script
 │   
-├── progress_assessment/
-│   ├── progress_assessment.R: main script to estimate the SDG progress
-│   ├── progress_assessment_functions.R: different functions used in the main progress assessment script
-│   
-├── output/
-│   ├── indicator_data_WORLD.Rdata: final database of indicators used in analysis. All countries included.
-│   
-├── source_data/
+├── 00_source_data/
 │   ├── DW.Rdata: data from UNICEF Data Warehouse. Already filtered cleaned. Created in DW_data_download.R
 │   ├── MENARO_metadata.csv: metadata of UNICEF MENARO countries, including names, iso3 and ID codes used in SDMX
 │   ├── PV_CHLD_DPRV_REG_MOD.csv: multidimensional poverty data from MENARO DW. The original source was the MDP report.
@@ -35,6 +16,25 @@ SDG-MENARO/
 │   ├── SH_HIV_INCD_U15.Rdata: merged data for indicator.
 │   ├── SI_POV_DAY1.csv: data from Salmeron-Gomez, et al., 2023 on % of children living in extreme poverty.
 │   ├── SI_POV_NAHC.Rdata: merged data for indicator.
+│
+├── 01_database_download/
+├── download_DW.R: to download and clean data from UNICEF Data Warehouse. Produces source_data/DW.Rdata
+├── download_helpers.R: functions used for the download scripts
+├── download_SDGGD.R: to download and clean data from SDG Global Database. Produces source_data/SDGGD.Rdata
+├── SDG_MENARO_check_data_merge.R: to check if SDGGD and DW data can be merged and produce merged datasets for selected indicators. Produces SE_TOT_PRFL_2.Rdata, SH_HIV_INCD_U15.Rdata and SI_POV_NAHC.Rdata found in source_data/.
+├── SDG_MENARO_data_compile.R: compiles the final table of indicator values used for analysis: output/indicator_data_WORLD.Rdata.
+│
+├── 02_database_descriptive/
+│   ├── descriptive_df.R: function to get descriptive statistics of the information for each indicator. Not used, originally used in SDG_MENARO_data_compile.R.
+│   ├── SDG_MENARO_data_description.qmd: to produce .doc with descriptive analysis by indicator and by country
+│   
+├── 03_progress_assessment/
+│   ├── progress_assessment.R: main script to estimate the SDG progress
+│   ├── progress_assessment_functions.R: different functions used in the main progress assessment script
+│   
+├── 04_output/
+│   ├── indicator_data_WORLD.Rdata: final database of indicator values.
+│   ├── progress_results.Rdata:  progress assessment results per country
 ```
 
 ## How to update the source data files

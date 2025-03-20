@@ -14,7 +14,7 @@ USER        <- Sys.getenv("USER")
 if (USERNAME == "palma"){
   projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "OneDrive - UNICEF/MENARO SDG")) #Output files
   repoFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO")) #repository files
-  rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO/source_data/"))  #raw data folder
+  rawdataFolder <- file.path(file.path(Sys.getenv("USERPROFILE"), "code/SDG-MENARO/00_source_data/"))  #raw data folder
   CR_SDG_indicators_path <- file.path("C:/Users/palma/OneDrive - UNICEF/MENARO SDG/child_related_SDG_indicators.xlsx") #master table with indicator codes. Local folder
 } else if (USERNAME == "YOUR_USERNAME"){
   projectFolder  <- file.path(file.path(Sys.getenv("USERPROFILE"), "YOUR/PATH")) #Output files
