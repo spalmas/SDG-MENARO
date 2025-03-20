@@ -1,21 +1,21 @@
-﻿LocID,LocPrintName,iso3
-12,Algeria,DZA
-48,Bahrain,BHR
-262,Djibouti,DJI
-818,Egypt,EGY
-364,Iran (Islamic Republic of),IRN
-368,Iraq,IRQ
-400,Jordan,JOR
-414,Kuwait,KWT
-422,Lebanon,LBN
-434,Libya,LBY
-504,Morocco,MAR
-512,Oman,OMN
-634,Qatar,QAT
-682,Saudi Arabia,SAU
-275,State of Palestine,PSE
-729,Sudan,SDN
-760,Syrian Arab Republic,SYR
-788,Tunisia,TUN
-784,United Arab Emirates,ARE
-887,Yemen,YEM
+﻿LocID,LocPrintName,iso3,region
+12,Algeria,DZA,Maghreb
+48,Bahrain,BHR,GCC
+262,Djibouti,DJI,ALD
+818,Egypt,EGY,Mashreq and Iran
+364,Iran (Islamic Republic of),IRN,Mashreq and Iran
+368,Iraq,IRQ,Mashreq and Iran
+400,Jordan,JOR,Mashreq and Iran
+414,Kuwait,KWT,GCC
+422,Lebanon,LBN,Mashreq and Iran
+434,Libya,LBY,Maghreb
+504,Morocco,MAR,Maghreb
+512,Oman,OMN,GCC
+634,Qatar,QAT,GCC
+682,Saudi Arabia,SAU,GCC
+275,State of Palestine,PSE,Mashreq and Iran
+729,Sudan,SDN,ALD
+760,Syrian Arab Republic,SYR,Mashreq and Iran
+788,Tunisia,TUN,Maghreb
+784,United Arab Emirates,ARE,GCC
+887,Yemen,YEM,ALD

@@ -18,11 +18,11 @@ SDG-MENARO/
 │   ├── SI_POV_NAHC.Rdata: merged data for indicator.
 │
 ├── 01_database_download/
-├── download_DW.R: to download and clean data from UNICEF Data Warehouse. Produces source_data/DW.Rdata
-├── download_helpers.R: functions used for the download scripts
-├── download_SDGGD.R: to download and clean data from SDG Global Database. Produces source_data/SDGGD.Rdata
-├── SDG_MENARO_check_data_merge.R: to check if SDGGD and DW data can be merged and produce merged datasets for selected indicators. Produces SE_TOT_PRFL_2.Rdata, SH_HIV_INCD_U15.Rdata and SI_POV_NAHC.Rdata found in source_data/.
-├── SDG_MENARO_data_compile.R: compiles the final table of indicator values used for analysis: output/indicator_data_WORLD.Rdata.
+│   ├── download_DW.R: to download and clean data from UNICEF Data Warehouse. Produces source_data/DW.Rdata
+│   ├── download_helpers.R: functions used for the download scripts
+│   ├── download_SDGGD.R: to download and clean data from SDG Global Database. Produces source_data/SDGGD.Rdata
+│   ├── SDG_MENARO_check_data_merge.R: to check if SDGGD and DW data can be merged and produce merged datasets for selected indicators. Produces SE_TOT_PRFL_2.Rdata, SH_HIV_INCD_U15.Rdata and SI_POV_NAHC.Rdata found in source_data/.
+│   ├── SDG_MENARO_data_compile.R: compiles the final table of indicator values used for analysis: output/indicator_data_WORLD.Rdata.
 │
 ├── 02_database_descriptive/
 │   ├── descriptive_df.R: function to get descriptive statistics of the information for each indicator. Not used, originally used in SDG_MENARO_data_compile.R.

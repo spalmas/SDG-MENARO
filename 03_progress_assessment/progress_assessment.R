@@ -6,8 +6,8 @@
 source("profile.R")
 
 # FILES ----
-load("04_output/indicator_data_WORLD.Rdata")
 source("03_progress_assessment/progress_assessment_functions.R")
+load("04_output/indicator_data_WORLD.Rdata")
 
 # PREPARE TABLE WITH MENARO AND LOG VALUES ----
 indicator_data_MENARO <- indicator_data_WORLD |> filter(iso3 %in% MENARO_metadata$iso3)
@@ -130,3 +130,6 @@ for (i in 1:nrow(CR_SDG_indicators)){
 
 # EXPORTING RESULTS ----
 save(progress.results, file = "04_output/progress_results.Rdata")
+
+# CHARTS ----
+
