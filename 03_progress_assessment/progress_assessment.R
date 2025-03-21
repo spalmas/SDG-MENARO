@@ -132,6 +132,7 @@ for (i in 1:nrow(CR_SDG_indicators)){
 save(progress.results, file = "04_output/progress_results.Rdata")
 
 # CHARTS AND TABLES----
+load(file = "04_output/progress_results.Rdata")
 
 ## Latest value per country per indicator ----
 latest_values <- indicator_data_MENARO  |> 
@@ -146,4 +147,32 @@ latest_values <- indicator_data_MENARO  |>
 
 write.csv(latest_values, "04_output/table1_latest_values.csv", row.names = FALSE)
 
+## Chart: National AP score by theme ----
+chart.data <- progress.results  |> 
+  left_join(CR_SDG_indicators |> select(MENARO.indicator.code, UNICEF.thematic.group), by = "MENARO.indicator.code") |>
+  left_join(MENARO_metadata |> select(iso3, LocPrintName, region), by = "iso3") |>
+  group_by(UNICEF.thematic.group, region, LocPrintName, AP.score)  |> 
+  summarize(value = n(), .groups = 'drop')  |>
+  mutate(AP.score = fct_relevel(AP.score, "No data", "Insufficient data", "No progress expected", "Need to accelerate","Will meet target"))
+
+# Define colors for AP scores
+ap_colors <- c("Will meet target" = "#238823", 
+              "Need to accelerate" = "#FFBF00", 
+              "No progress expected" = "#D2222D", 
+              "Insufficient data" = "lightgrey", 
+              "No data" = "darkgrey")
+
+# Plot the chart
+g  <- ggplot(chart.data, aes(y= LocPrintName, x = value, fill = AP.score)) +
+  facet_wrap(~UNICEF.thematic.group, ncol = 5) +
+  geom_bar(position = 'fill', stat = 'identity') +
+  scale_fill_manual(values = ap_colors) +
+  theme_minimal() +
+  labs(x = "", y = "", fill = "AP Score") +
+  theme(panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  axis.text.x = element_blank()) +
+  scale_y_discrete(limits = rev)
+
+ggsave("04_output/fig_country_ap_score_by_theme.jpeg", width = 12, height = 8)
 
