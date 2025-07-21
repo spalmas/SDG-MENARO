@@ -11,8 +11,8 @@ source("profile.R")
 source("helpers/descriptive_df.R")
 
 # SOURCE FILES ----
-load("source_data/SDGGD.Rdata")
-load("source_data/DW.Rdata")
+load("00_source_data/SDGGD.Rdata")
+load("00_source_data/DW.Rdata")
 
 # SI_POV_NAHC ----
 #Yes, they can be merged
@@ -57,7 +57,7 @@ g <- ggplot(SH_HIV_INCD_U15, aes(x=time.period, y=obs.value, color = iso3))+
   geom_line()+
   geom_text(aes(label = database.source))
 print(g)
-save(SH_HIV_INCD_U15, file = 'source_data/SH_HIV_INCD_U15.Rdata')
+save(SH_HIV_INCD_U15, file = '00_source_data/SH_HIV_INCD_U15.Rdata')
 
 
 # SE_TOT_PRFL_2 ----
@@ -71,7 +71,7 @@ g <- ggplot(bind_rows(SDGGD_MENARO,DW_MENARO), aes(x=time.period, y=obs.value, c
 print(g)
 SE_TOT_PRFL_2 <- bind_rows(SDGGD_MENARO,
                            DW_MENARO |> filter(iso3 %in% c("EGY", "LBN")))
-save(SE_TOT_PRFL_2, file = 'source_data/SE_TOT_PRFL_2.Rdata')
+save(SE_TOT_PRFL_2, file = '00_source_data/SE_TOT_PRFL_2.Rdata')
 
 # SE_TOT_PRFL_5 ----
 # All data from DW is in SDGGD
@@ -139,5 +139,3 @@ g <- ggplot(bind_rows(SDGGD_MENARO,DW_MENARO), aes(x=time.period, y=obs.value, c
   geom_line()+
   geom_text(aes(label = database.source))
 print(g)
-
-

@@ -36,7 +36,7 @@ source("01_database_download/download_helpers.R")
 # write.csv(SDGGD, file = "source_data/SGDGD_unfiltered.csv",row.names = FALSE)
 
 # READING IF NOT DOWNLOAD ----
-SDGGD <- read.csv(file = "source_data/SGDGD_unfiltered.csv")
+SDGGD <- read.csv(file = "00_source_data/SGDGD_unfiltered.csv")
 
 
 #deleting rows that are not of use (disaggregations not included in our indicators)
